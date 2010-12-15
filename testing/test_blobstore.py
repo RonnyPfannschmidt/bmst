@@ -23,11 +23,11 @@ def should_fail_on_del(store):
         del store[key]
 
 def should_load(store):
-    test_store(store)
+    should_save(store)
     assert store[key] == 'test'
 
 
 def should_list_items(store, tmpdir):
-    test_store(store)
+    should_save(store)
 
     assert list(store) == [key]
