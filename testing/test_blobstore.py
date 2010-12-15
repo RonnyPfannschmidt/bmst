@@ -1,6 +1,7 @@
 import py
 from bmst import FileStore, MappingStore
 
+key = py.std.hashlib.sha1('test').hexdigest()
 
 def pytest_generate_tests(metafunc):
     if 'store' in metafunc.funcargnames:
@@ -13,15 +14,18 @@ def pytest_funcarg__store(request):
     if request.param is map:
         return MappingStore({})
 
-def test_store(store, tmpdir):
-    key = py.std.hashlib.sha1('test').hexdigest()
-    store.put(key, 'test')
+def test_store(store):
+    store[key] = 'test'
     assert key in store
 
 
 
-def test_get(store, tmpdir):
-    key = py.std.hashlib.sha1('test').hexdigest()
-    test_store(store, tmpdir)
-    assert store.get(key) == 'test'
+def test_get(store):
+    test_store(store)
+    assert store[key] == 'test'
 
+
+def test_iter(store, tmpdir):
+    test_store(store)
+
+    assert list(store) == [key]
