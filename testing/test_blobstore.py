@@ -14,18 +14,20 @@ def pytest_funcarg__store(request):
     if request.param is map:
         return MappingStore({})
 
-def test_store(store):
+def should_save(store):
     store[key] = 'test'
     assert key in store
 
+def should_fail_on_del(store):
+    with py.test.raises(TypeError):
+        del store[key]
 
-
-def test_get(store):
+def should_load(store):
     test_store(store)
     assert store[key] == 'test'
 
 
-def test_iter(store, tmpdir):
+def should_list_items(store, tmpdir):
     test_store(store)
 
     assert list(store) == [key]
