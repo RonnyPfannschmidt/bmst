@@ -7,8 +7,11 @@ class BaseStore(collections.MutableMapping):
         raise TypeError('delete not supported')
 
 class FileStore(BaseStore):
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, root, subdir=None):
+        if subdir:
+            self.path = root.join(subdir)
+        else:
+            self.path = root
 
     def __setitem__(self, key, data):
         self.path.join(key).write(data)
@@ -27,20 +30,27 @@ class FileStore(BaseStore):
             yield item.basename
 
 class MappingStore(BaseStore):
-    def __init__(self, mapping):
-        self.mapping = mapping
+    def __init__(self, mapping, prefix=None, update=False):
+        self.prefix = prefix
+        if update:
+            self.mapping = {}
+            self.update(mapping)
+        else:
+            self.mapping = mapping
 
     def __setitem__(self, key, value):
-        self.mapping[key] = value
+        self.mapping[self.prefix, key] = value
 
     def __getitem__(self, key):
-        return self.mapping[key]
+        return self.mapping[self.prefix, key]
 
     def __contains__(self, key):
-        return key in self.mapping
+        return (self.prefix, key) in self.mapping
 
     def __iter__(self):
-        return iter(self.mapping)
+        for prefix, key in self.mapping:
+            if prefix is self.prefix:
+                yield key
 
     def __len__(self):
         return len(self.mapping)
