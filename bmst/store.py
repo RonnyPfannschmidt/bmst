@@ -1,3 +1,4 @@
+import py
 import collections
 import json
 
@@ -17,7 +18,10 @@ class FileStore(BaseStore):
         self.path.join(key).write(data)
 
     def __getitem__(self, key):
-        return self.path.join(key).read()
+        try:
+            return self.path.join(key).read()
+        except py.error.ENOENT:
+            raise KeyError(key)
 
     def __contains__(self, key):
         return self.path.join(key).check()
@@ -68,7 +72,8 @@ class Httplib2Store(BaseStore):
 
     def __getitem__(self, key):
         headers, content = self.http.request(self.url+key)
-        #XXX: check headers
+        if headers['status'] == '404':
+            raise KeyError(key)
         return content
 
     def __setitem__(self, key, value):

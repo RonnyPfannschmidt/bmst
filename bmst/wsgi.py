@@ -11,7 +11,6 @@ class StoreApp(object):
 
     @Request.application
     def __call__(self, request):
-
         if request.path == '/':
             return Response(json.dumps(list(self.store)))
         elif request.method=='PUT':
@@ -20,5 +19,6 @@ class StoreApp(object):
             return Response() #XXX: correct code
         else:
             key = request.path[1:]
-            return Response(self.store[key])
-        return Response('a')
+            if key in self.store:
+                return Response(self.store[key])
+            return werkzeug.exceptions.NotFound()
