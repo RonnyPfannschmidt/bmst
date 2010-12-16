@@ -7,7 +7,7 @@ import hashlib
 def sha1(data):
     return hashlib.sha1(data).hexdigest()
 
-class Combined(object):
+class BMST(object):
     def __init__(self, compression, store, root):
         self.meta = store(root, 'meta')
         self.blobs = store(root, 'blobs')
@@ -39,4 +39,5 @@ class Combined(object):
 
         self.blobs[key] = self.compression.compress(data)
         return key
+
 
