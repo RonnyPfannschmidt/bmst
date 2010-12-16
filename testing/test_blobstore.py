@@ -46,3 +46,7 @@ def should_list_items(store, tmpdir):
     should_save(store)
 
     assert list(store) == [key]
+
+def should_fail_on_get_unknown(store):
+    with py.test.raises(KeyError):
+        store[key]
