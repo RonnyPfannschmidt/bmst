@@ -1,5 +1,5 @@
 import collections
-
+import json
 
 class BaseStore(collections.MutableMapping):
 
@@ -53,4 +53,35 @@ class MappingStore(BaseStore):
                 yield key
 
     def __len__(self):
+        #XXX wrong
         return len(self.mapping)
+
+
+class Httplib2Store(BaseStore):
+    def __init__(self, base, prefix=None):
+        import httplib2
+        self.http = httplib2.Http()
+        if prefix is None:
+            self.url = base
+        else:
+            self.url = '%s/%s/' % (base, prefix)
+
+    def __getitem__(self, key):
+        headers, content = self.http.request(self.url+key)
+        #XXX: check headers
+        return content
+
+    def __setitem__(self, key, value):
+        self.http.request(
+            self.url+key,
+            method='PUT',
+            body=value,
+        )
+
+    def __iter__(self):
+        headers, content = self.http.request(self.url)
+        #XXX: check headers
+        return iter(json.loads(content))
+
+    def __len__(self):
+        pass
