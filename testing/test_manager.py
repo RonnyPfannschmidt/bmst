@@ -1,5 +1,5 @@
 import py
-from bmst.managed import Combined
+from bmst.managed import BMST
 from bmst import MappingStore
 import bz2
 
@@ -9,7 +9,7 @@ def pytest_funcarg__mapping(request):
 
 
 def pytest_funcarg__store(request):
-    return Combined(compression=bz2,
+    return BMST(compression=bz2,
                      store=MappingStore,
                      root=request.getfuncargvalue('mapping'))
 
