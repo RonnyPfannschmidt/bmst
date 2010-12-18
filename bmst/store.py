@@ -2,10 +2,12 @@ import py
 import collections
 import json
 
+
 class BaseStore(collections.MutableMapping):
 
     def __delitem__(self, key):
         raise TypeError('delete not supported')
+
 
 class FileStore(BaseStore):
     def __init__(self, root, subdir=None):
@@ -32,6 +34,7 @@ class FileStore(BaseStore):
     def __iter__(self):
         for item in self.path.listdir():
             yield item.basename
+
 
 class MappingStore(BaseStore):
     def __init__(self, mapping, prefix=None, update=False):
@@ -71,14 +74,14 @@ class Httplib2Store(BaseStore):
             self.url = '%s/%s/' % (base, prefix)
 
     def __getitem__(self, key):
-        headers, content = self.http.request(self.url+key)
+        headers, content = self.http.request(self.url + key)
         if headers['status'] == '404':
             raise KeyError(key)
         return content
 
     def __setitem__(self, key, value):
         self.http.request(
-            self.url+key,
+            self.url + key,
             method='PUT',
             body=value,
         )
