@@ -7,12 +7,12 @@ import hashlib
 def sha1(data):
     return hashlib.sha1(data).hexdigest()
 
+
 class BMST(object):
     def __init__(self, compression, store, root):
         self.meta = store(root, 'meta')
         self.blobs = store(root, 'blobs')
         self.compression = compression
-
 
     def put_meta(self, key=None, mapping=None):
         raw_data = json.dumps(mapping, indent=2, sort_keys=True)
@@ -39,5 +39,3 @@ class BMST(object):
 
         self.blobs[key] = self.compression.compress(data)
         return key
-
-

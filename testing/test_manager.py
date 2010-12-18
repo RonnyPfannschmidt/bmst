@@ -13,6 +13,7 @@ def pytest_funcarg__store(request):
                      store=MappingStore,
                      root=request.getfuncargvalue('mapping'))
 
+
 def should_fail_put_meta_on_missing_blob(store):
 
     with py.test.raises(LookupError) as excinfo:
@@ -30,4 +31,3 @@ def should_put_meta_on_existing_blob(store, mapping):
             'test': blob,
         },
     })
-

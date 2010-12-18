@@ -13,12 +13,18 @@ class StoreApp(object):
     def __call__(self, request):
         if request.path == '/':
             return Response(json.dumps(list(self.store)))
-        elif request.method=='PUT':
+        elif request.method == 'PUT':
             key = request.path[1:]
             self.store[key] = request.data
-            return Response() #XXX: correct code
+            #XXX: correct code
+            return Response()
         else:
             key = request.path[1:]
             if key in self.store:
                 return Response(self.store[key])
             return werkzeug.exceptions.NotFound()
+
+
+class CombinedApp(object):
+    def __init__(self, store, root):
+        pass
