@@ -10,6 +10,7 @@ def sha1(data):
 
 class BMST(object):
     def __init__(self, compression, store, root):
+        self.root = root
         self.meta = store(root, 'meta')
         self.blobs = store(root, 'blobs')
         self.compression = compression
@@ -20,7 +21,7 @@ class BMST(object):
         if key is None:
             key = computed_key
         elif computed_key != key:
-            raise ValueError
+            raise ValueError('%r != %r)' % (key, computed_key))
 
         missing = find_missing_blobs(mapping, self.blobs)
         if missing:

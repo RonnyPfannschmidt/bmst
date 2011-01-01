@@ -3,6 +3,7 @@ import werkzeug
 from werkzeug import Request, Response
 from werkzeug.exceptions import MethodNotAllowed
 import json
+from .managed import BMST
 
 
 class StoreApp(object):
@@ -27,4 +28,7 @@ class StoreApp(object):
 
 class CombinedApp(object):
     def __init__(self, store, root):
-        pass
+        self.bmst = BMST(bz2, store, root)
+
+        self.meta = StoreApp(self.bmst.meta)
+        self.store = StoreApp(self.bmst.store)
