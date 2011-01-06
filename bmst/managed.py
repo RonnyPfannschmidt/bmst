@@ -9,11 +9,9 @@ def sha1(data):
 
 
 class BMST(object):
-    def __init__(self, compression, store, root):
-        self.root = root
-        self.meta = store(root, 'meta')
-        self.blobs = store(root, 'blobs')
-        self.compression = compression
+    def __init__(self, blobs, meta):
+        self.blobs = blobs
+        self.meta = meta
 
     def put_meta(self, key=None, mapping=None):
         raw_data = json.dumps(mapping, indent=2, sort_keys=True)
@@ -27,7 +25,7 @@ class BMST(object):
         if missing:
             raise LookupError(missing)
 
-        self.meta[key] = self.compression.compress(raw_data)
+        self.meta[key] = bz2.compress(raw_data)
 
         return key
 
@@ -38,5 +36,5 @@ class BMST(object):
         elif computed_key != key:
             raise ValueError
 
-        self.blobs[key] = self.compression.compress(data)
+        self.blobs[key] = bz2.compress(data)
         return key
