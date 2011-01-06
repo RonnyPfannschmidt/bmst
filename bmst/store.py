@@ -56,4 +56,4 @@ class Httplib2Store(BaseStore):
     def keys(self):
         headers, content = self.http.request(self.url)
         #XXX: check headers
-        return iter(json.loads(content))
+        return json.loads(content)
