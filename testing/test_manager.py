@@ -1,17 +1,10 @@
 import py
 from bmst.managed import BMST
-from bmst import MappingStore
 import bz2
 
 
-def pytest_funcarg__mapping(request):
-    return {}
-
-
 def pytest_funcarg__store(request):
-    return BMST(compression=bz2,
-                     store=MappingStore,
-                     root=request.getfuncargvalue('mapping'))
+    return BMST(blobs={}, meta={})
 
 
 def should_fail_put_meta_on_missing_blob(store):
@@ -24,7 +17,7 @@ def should_fail_put_meta_on_missing_blob(store):
         })
 
 
-def should_put_meta_on_existing_blob(store, mapping):
+def should_put_meta_on_existing_blob(store):
     blob = store.put_blob(data='test')
     store.put_meta(mapping={
         'items': {
