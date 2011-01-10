@@ -2,3 +2,4 @@ docs/_build
 .tox
 MANIFEST
 .*\.egg-info
+example/store
