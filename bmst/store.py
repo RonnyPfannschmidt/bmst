@@ -19,7 +19,7 @@ class FileStore(BaseStore):
         self.path = path
 
     def __setitem__(self, key, data):
-        self.path.join(key).write(data)
+        self.path.join(key).write(data, 'wb')
 
     def __getitem__(self, key):
         try:
