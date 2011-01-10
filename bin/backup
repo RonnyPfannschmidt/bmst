@@ -1,0 +1,5 @@
+#!/usr/bin/python
+from bmst.backup_app import main
+
+
+main()
