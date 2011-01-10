@@ -1,34 +1,27 @@
-
-import werkzeug
-from werkzeug import Request, Response
-from werkzeug.exceptions import MethodNotAllowed
 import json
 from .managed import BMST
 
 
-class StoreApp(object):
-    def __init__(self, store):
-        self.store = store
+import flask
 
-    @Request.application
-    def __call__(self, request):
-        if request.path == '/':
-            return Response(json.dumps(list(self.store)))
-        elif request.method == 'PUT':
-            key = request.path[1:]
-            self.store[key] = request.data
-            #XXX: correct code
-            return Response()
-        else:
-            key = request.path[1:]
-            if key in self.store:
-                return Response(self.store[key])
-            return werkzeug.exceptions.NotFound()
+app = flask.Flask('bmst')
 
 
-class CombinedApp(object):
-    def __init__(self, store, root):
-        self.bmst = BMST(bz2, store, root)
+@app.route('/<any(meta,blobs):kind>/', methods=('GET',))
+def listing(kind):
+    store = getattr(app.bmst, kind)
+    return json.dumps(store.keys())
 
-        self.meta = StoreApp(self.bmst.meta)
-        self.store = StoreApp(self.bmst.store)
+
+@app.route('/<any(meta,blobs):kind>/<key>', methods=('GET', 'PUT',))
+def data(kind, key):
+    store = getattr(app.bmst, kind)
+    print store, flask.request.method
+    if flask.request.method == 'GET':
+        try:
+            return store[key]
+        except KeyError:
+            flask.abort(404)
+    else:
+        store[key] = flask.request.data
+        return '', 204
