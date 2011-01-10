@@ -6,6 +6,7 @@ setup(
     version=get_version(),
     install_requires=[
         'httplib2',
+        'werkzeug',
         'py',
         'apipkg',
     ],

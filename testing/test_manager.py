@@ -18,7 +18,7 @@ def should_fail_put_meta_on_missing_blob(store):
 
 
 def should_put_meta_on_existing_blob(store):
-    blob = store.put_blob(data='test')
+    blob = store.put_blob(data=b'test')
     store.put_meta(mapping={
         'items': {
             'test': blob,
