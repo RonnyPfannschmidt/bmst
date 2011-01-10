@@ -1,3 +1,4 @@
+import py
 
 
 def fullmeta(root):
@@ -41,3 +42,10 @@ def make_backup(root, bmst):
             bmst.put_blob(key=key, data=blobs[key])
 
         return bmst.put_meta(mapping=meta)
+
+
+def main():
+    if len(sys.argv) == 2:
+        config = py.iniconfig.IniConfig(sys.argv[1])
+    else:
+        config = py.iniconfig.IniConfig('bmst.ini')
