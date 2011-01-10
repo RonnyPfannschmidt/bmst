@@ -27,6 +27,7 @@ def guessmeta(root):
     return {
         'project': root.basename,
         'tags': ['backup'],
+        'timestamp': max(x.mtime() for x in root.visit()),
     }
 
 
