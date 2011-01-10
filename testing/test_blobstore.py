@@ -1,6 +1,6 @@
 import py
 from bmst import FileStore, Httplib2Store
-from bmst.wsgi import StoreApp
+from bmst.managed import BMST
 
 key = py.std.hashlib.sha1('test').hexdigest()
 
@@ -23,10 +23,11 @@ def pytest_funcarg__store(request):
     if request.param is dict:
         return {}
     if request.param is None:
-        app = StoreApp({})
+        from bmst.wsgi import app
+        app.bmst = BMST(meta={}, blobs={})
         import wsgi_intercept
         wsgi_intercept.add_wsgi_intercept('test_host', 80, lambda: app)
-        return Httplib2Store('http://test_host/')
+        return Httplib2Store('http://test_host/blobs/')
 
 
 def should_save(store):
