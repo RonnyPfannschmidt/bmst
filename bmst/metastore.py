@@ -1,7 +1,3 @@
-
-import collections
-
-
 def find_missing_blobs(data, blobstore):
     keys = set(blobstore.keys())
     missing = {}

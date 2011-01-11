@@ -5,13 +5,13 @@ from bmst.managed import  BMST
 
 
 def test_load(tmpdir):
-    assert load_tree(tmpdir) == {}
+    assert load_tree(tmpdir) == ({}, 0)
 
     tmpdir.ensure('a/b').write('test\n')
 
-    assert load_tree(tmpdir) == {
+    assert load_tree(tmpdir) == ({
         'a/b': ('4e1243bd22c66e76c2ba9eddc1f91394e57f9f83', 'test\n'),
-    }
+    }, tmpdir.join('a/b').mtime())
 
 
 def test_fullmeta(tmpdir):
