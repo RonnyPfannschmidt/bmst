@@ -10,16 +10,17 @@ def pytest_funcarg__store(request):
 def should_fail_put_meta_on_missing_blob(store):
 
     with py.test.raises(LookupError) as excinfo:
-        store.put_meta(mapping={
+        store.store_meta(mapping={
             'items': {
                 'test': '123',
             },
         })
+    assert excinfo.value[0] == {'test': '123'}
 
 
 def should_put_meta_on_existing_blob(store):
-    blob = store.put_blob(data=b'test')
-    store.put_meta(mapping={
+    blob = store.store_blob(data=b'test')
+    store.store_meta(mapping={
         'items': {
             'test': blob,
         },
