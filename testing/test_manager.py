@@ -28,19 +28,14 @@ def should_put_meta_on_existing_blob(store):
 
 
 def should_find_missing_blobs():
-    missing = find_missing_blobs({
-        'items': {
-            'test': 'foo',
-        },
-    }, {})
+    missing = find_missing_blobs({'test': 'foo'}, {})
 
     assert missing == {'test': 'foo'}
 
 
 def should_not_find_existing_blobs():
-    missing = find_missing_blobs({
-        'items': {
-            'test': 'foo',
-        },
-    }, {'foo': 'yay'})
+    missing = find_missing_blobs(
+        expected={'test': 'foo'},
+        store={'foo': 'yay'},
+    )
     assert missing is None
