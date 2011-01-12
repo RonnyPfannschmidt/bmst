@@ -1,5 +1,5 @@
 import py
-from bmst.managed import BMST
+from bmst.managed import BMST, find_missing_blobs
 import bz2
 
 
@@ -24,3 +24,22 @@ def should_put_meta_on_existing_blob(store):
             'test': blob,
         },
     })
+
+
+def should_find_missing_blobs():
+    missing = find_missing_blobs({
+        'items': {
+            'test': 'foo',
+        },
+    }, {})
+
+    assert missing == {'test': 'foo'}
+
+
+def should_not_find_existing_blobs():
+    missing = find_missing_blobs({
+        'items': {
+            'test': 'foo',
+        },
+    }, {'foo': 'yay'})
+    assert missing is None

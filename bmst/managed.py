@@ -1,8 +1,18 @@
 import json
-from bmst.metastore import find_missing_blobs
 import bz2
 import hashlib
 import py
+
+
+def find_missing_blobs(data, blobstore):
+    keys = set(blobstore.keys())
+    missing = {}
+    for name, value in data['items'].items():
+        if value not in keys:
+            missing[name] = value
+    if missing:
+        # cause we want None else
+        return missing
 
 
 def sha1(data):
