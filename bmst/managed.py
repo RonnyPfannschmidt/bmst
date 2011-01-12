@@ -19,34 +19,32 @@ def sha1(data):
     return hashlib.sha1(data).hexdigest()
 
 
+def encode_data(raw_data, key):
+    computed_key = sha1(raw_data)
+    if key is not None and computed_key != key:
+        raise ValueError('%r != %r)' % (key, computed_key))
+    return computed_key, bz2.compress(raw_data)
+
+
 class BMST(object):
     def __init__(self, blobs, meta):
         self.blobs = blobs
         self.meta = meta
 
-    def put_meta(self, key=None, mapping=None):
-        raw_data = json.dumps(mapping, indent=2, sort_keys=True)
-        raw_data = raw_data.encode('utf-8')
-        computed_key = sha1(raw_data)
-        if key is None:
-            key = computed_key
-        elif computed_key != key:
-            raise ValueError('%r != %r)' % (key, computed_key))
+    def store_meta(self, key=None, mapping=None):
 
         missing = find_missing_blobs(mapping, self.blobs)
         if missing:
             raise LookupError(missing)
 
-        self.meta[key] = bz2.compress(raw_data)
+        raw_data = json.dumps(mapping, indent=2, sort_keys=True)
+        raw_data = raw_data.encode('utf-8')
+        key, encoded = encode_data(raw_data, key)
+        self.meta[key] = encoded
 
         return key
 
-    def put_blob(self, key=None, data=None):
-        computed_key = sha1(data)
-        if key is None:
-            key = computed_key
-        elif computed_key != key:
-            raise ValueError
-
-        self.blobs[key] = bz2.compress(data)
+    def store_blob(self, key=None, data=None):
+        key, encoded = encode_data(data, key)
+        self.blobs[key] = encoded
         return key

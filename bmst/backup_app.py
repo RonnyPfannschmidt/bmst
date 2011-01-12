@@ -47,13 +47,13 @@ def load_tree(root):
 def make_backup(root, bmst):
     meta, blobs = fullmeta(root)
     try:
-        return bmst.put_meta(mapping=meta)
+        return bmst.store_meta(mapping=meta)
     except LookupError as e:
         missing_mapping = e.args[0]
         for key in missing_mapping.values():
-            bmst.put_blob(key=key, data=blobs[key])
+            bmst.store_blob(key=key, data=blobs[key])
 
-        return bmst.put_meta(mapping=meta)
+        return bmst.store_meta(mapping=meta)
 
 
 def get_bmst(root):
