@@ -3,10 +3,10 @@ import bz2
 import hashlib
 
 
-def find_missing_blobs(data, blobstore):
-    keys = set(blobstore.keys())
+def find_missing_blobs(expected, store):
+    keys = set(store.keys())
     missing = {}
-    for name, value in data['items'].items():
+    for name, value in expected.items():
         if value not in keys:
             missing[name] = value
     if missing:
@@ -32,7 +32,7 @@ class BMST(object):
 
     def store_meta(self, key=None, mapping=None):
 
-        missing = find_missing_blobs(mapping, self.blobs)
+        missing = find_missing_blobs(mapping['items'], self.blobs)
         if missing:
             raise LookupError(missing)
 
