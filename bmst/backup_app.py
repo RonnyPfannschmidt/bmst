@@ -54,5 +54,3 @@ def make_backup(root, bmst):
             bmst.store_blob(key=key, data=blobs[key])
 
         return bmst.store_meta(mapping=meta)
-
-
