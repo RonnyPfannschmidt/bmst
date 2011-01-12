@@ -1,7 +1,6 @@
 import json
 import bz2
 import hashlib
-import py
 
 
 def find_missing_blobs(data, blobstore):
