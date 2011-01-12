@@ -56,22 +56,3 @@ def make_backup(root, bmst):
         return bmst.store_meta(mapping=meta)
 
 
-def get_bmst(root):
-    root.ensure(dir=1)
-    meta = bmst.FileStore(root.ensure('meta', dir=1))
-    blobs = bmst.FileStore(root.ensure('blobs', dir=1))
-    return BMST(meta=meta, blobs=blobs)
-
-
-def main():
-    if len(sys.argv) == 2:
-        config = py.iniconfig.IniConfig(sys.argv[1])
-    else:
-        config = py.iniconfig.IniConfig('bmst.ini')
-    path = py.path.local().join(config.get('backup', 'store'), abs=1)
-    bmst = get_bmst(path)
-    import shlex
-    roots = config.get('backup', 'roots', convert=shlex.split)
-    for root in roots:
-        path = py.path.local().join(root, abs=1)
-        make_backup(path, bmst)
