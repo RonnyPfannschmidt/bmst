@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
 parser.convert_arg_line_to_args = shlex.split
 
 parser.add_argument('-s', '--store', required=True)
-parser.add_argument('-d', '--debug', default=False, action='store_true')
+parser.add_argument('-d', '--debug', action='store_true')
 parser.add_argument('--backup', default=[], action='append')
 
 import bmst
