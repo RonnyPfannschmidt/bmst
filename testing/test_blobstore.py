@@ -1,5 +1,5 @@
 import py
-from bmst import FileStore, Httplib2Store
+from bmst.store import FileStore, Httplib2Store
 from bmst.managed import BMST
 
 key = py.std.hashlib.sha1('test').hexdigest()
