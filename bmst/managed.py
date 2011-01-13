@@ -18,6 +18,42 @@ def sha1(data):
     return hashlib.sha1(data).hexdigest()
 
 
+def dumb_sync(source, target):
+    """
+    sync items from source to target
+    """
+    to_sync = set(source) - set(target)
+    for item in to_sync:
+        target[item] = source[item]
+
+
+def check_store(store, kind=None):
+    errors = []
+    for item in store:
+        raw = bz2.decompress(store[item])
+        sha = sha1(raw)
+        if sha != item:
+            print 'E: item', item, 'got hash', sha, 'instead'
+            errors.append(item)
+    return errors
+
+
+def check_meta(bmst):
+    all_missing = {}
+    for item in bmst.meta:
+        data = bmst.get_meta(item)
+        missing = find_missing_blobs(data['items'], bmst.blobs)
+        if missing:
+            print 'E: missing blobs for meta, item'
+            all_missing[item] = missing
+
+
+def check_bmst(bmst):
+    check_store(bmst.blobs, 'blob')
+    check_store(bmst.meta, 'meta')
+    check_meta(bmst)
+
+
 def encode_data(raw_data, key):
     computed_key = sha1(raw_data)
     if key is not None and computed_key != key:
