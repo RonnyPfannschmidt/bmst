@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import py
 import bmst
@@ -40,11 +41,11 @@ def load_tree(root):
         if x.check(file=1):
             results[x.relto(root)] = x.computehash('sha1'), x.read('rb')
         mtime = max(mtime, x.mtime())
-
     return results, mtime
 
 
 def make_backup(root, bmst):
+    print('backing up', root)
     meta, blobs = fullmeta(root)
     try:
         return bmst.store_meta(mapping=meta)

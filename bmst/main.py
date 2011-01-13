@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse
 import shlex
 import py
@@ -17,9 +18,11 @@ from bmst.managed import BMST
 def main():
     opts = parser.parse_args()
     if opts.debug:
-        print opts
+        print(opts)
     bmst = py.path.local(opts.store)
+    print('using store', bmst)
     bmst = get_bmst(bmst)
+
     for to_backup in opts.backup:
         path = py.path.local(to_backup)
         make_backup(root=path, bmst=bmst)
