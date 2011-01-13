@@ -41,17 +41,23 @@ def check_store(store, kind=None):
 def check_meta(bmst):
     all_missing = {}
     for item in bmst.meta:
-        data = bmst.get_meta(item)
+        data = bmst.load_meta(item)
         missing = find_missing_blobs(data['items'], bmst.blobs)
         if missing:
-            print 'E: missing blobs for meta, item'
+            print 'E: missing blobs for meta, item', item
             all_missing[item] = missing
+    return all_missing
 
 
 def check_bmst(bmst):
+    results = []
+    print 'checking blobs'
     check_store(bmst.blobs, 'blob')
+    print 'checking meta'
     check_store(bmst.meta, 'meta')
+    print 'checking references'
     check_meta(bmst)
+    #XXX: orphan blobs
 
 
 def encode_data(raw_data, key):
@@ -78,6 +84,9 @@ class BMST(object):
         self.meta[key] = encoded
 
         return key
+
+    def load_meta(self, key):
+        return json.loads(bz2.decompress(self.meta[key]))
 
     def store_blob(self, key=None, data=None):
         key, encoded = encode_data(data, key)
