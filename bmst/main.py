@@ -13,6 +13,7 @@ parser.add_argument('--backup', default=[], action='append')
 import bmst
 from bmst.backup_app import make_backup
 from bmst.managed import BMST
+from bmst.store import FileStore
 
 
 def main():
@@ -30,6 +31,6 @@ def main():
 
 def get_bmst(root):
     root.ensure(dir=1)
-    meta = bmst.FileStore(root.ensure('meta', dir=1))
-    blobs = bmst.FileStore(root.ensure('blobs', dir=1))
+    meta = FileStore(root.ensure('meta', dir=1))
+    blobs = FileStore(root.ensure('blobs', dir=1))
     return BMST(meta=meta, blobs=blobs)
