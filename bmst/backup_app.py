@@ -1,8 +1,4 @@
 from __future__ import print_function
-import sys
-import py
-import bmst
-from bmst.managed import BMST
 
 
 def fullmeta(root):

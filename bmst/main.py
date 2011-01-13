@@ -10,7 +10,6 @@ parser.add_argument('-s', '--store', required=True)
 parser.add_argument('-d', '--debug', action='store_true')
 parser.add_argument('--backup', default=[], action='append')
 
-import bmst
 from bmst.backup_app import make_backup
 from bmst.managed import BMST
 from bmst.store import FileStore
