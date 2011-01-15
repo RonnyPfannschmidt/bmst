@@ -27,7 +27,9 @@ def dumb_sync(source, target):
         target[item] = source[item]
 
 
-def check_store(store, kind=None):
+def check_store(bmst, kind):
+    print 'checking', kind
+    store = getattr(bmst, kind)
     errors = []
     for item in store:
         raw = bz2.decompress(store[item])
@@ -38,7 +40,8 @@ def check_store(store, kind=None):
     return errors
 
 
-def check_meta(bmst):
+def check_references(bmst):
+    print 'checking references'
     all_missing = {}
     for item in bmst.meta:
         data = bmst.load_meta(item)
@@ -48,17 +51,33 @@ def check_meta(bmst):
             all_missing[item] = missing
     return all_missing
 
+def find_orphans(bmst):
+    print 'searching orphan blobs'
+    known = set(bmst.blobs)
+    for item in bmst.meta:
+        data = bmst.load_meta(item)
+        known -= set(data['items'].values())
+    if known:
+        print 'E: found %s orphans' % len(known)
+    return known
+
+checks = [
+    (check_store, 'blobs'),
+    (check_store, 'meta'),
+    #XXX meta items vaid json test is missing
+    (check_references,),
+    (find_orphans, ),
+]
+
 
 def check_bmst(bmst):
-    results = []
-    print 'checking blobs'
-    check_store(bmst.blobs, 'blob')
-    print 'checking meta'
-    check_store(bmst.meta, 'meta')
-    print 'checking references'
-    check_meta(bmst)
-    #XXX: orphan blobs
 
+    results = []
+    for check in checks:
+        fun = check[0]
+        args = check[1:]
+
+        results.append(fun(bmst, *args))
 
 def encode_data(raw_data, key):
     computed_key = sha1(raw_data)
@@ -92,3 +111,6 @@ class BMST(object):
         key, encoded = encode_data(data, key)
         self.blobs[key] = encoded
         return key
+
+    def load_blob(self, key):
+        return bz2.decompress(self.blobs[key])
