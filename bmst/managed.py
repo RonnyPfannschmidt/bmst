@@ -51,6 +51,7 @@ def check_references(bmst):
             all_missing[item] = missing
     return all_missing
 
+
 def find_orphans(bmst):
     print 'searching orphan blobs'
     known = set(bmst.blobs)
@@ -78,6 +79,7 @@ def check_bmst(bmst):
         args = check[1:]
 
         results.append(fun(bmst, *args))
+
 
 def encode_data(raw_data, key):
     computed_key = sha1(raw_data)
