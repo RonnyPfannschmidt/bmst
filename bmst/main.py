@@ -14,9 +14,11 @@ parser.add_argument('--backup', default=[], action='append')
 parser.add_argument('--serve', action='store_true')
 parser.add_argument('--show', action='store_true')
 parser.add_argument('--sync', default=[], action='append')
-parser.add_argument('--ls')
-parser.add_argument('--archive', nargs=2)
-parser.add_argument('--extract', nargs=2)
+parser.add_argument('--ls', action='store_true')
+parser.add_argument('--archive', action='store_true')
+parser.add_argument('--extract', action='store_true')
+parser.add_argument('key', default=None, nargs='?')
+parser.add_argument('target', default=None, nargs='?')
 
 
 from bmst.backup_app import make_backup
@@ -50,7 +52,7 @@ def main():
 
     if opts.ls:
         print(json.dumps(
-            bmst.load_meta(key=opts.ls),
+            bmst.load_meta(key=opts.key),
             indent=2,
             sort_keys=True,
         ))
