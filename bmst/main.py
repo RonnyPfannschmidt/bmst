@@ -15,6 +15,9 @@ parser.add_argument('--serve', action='store_true')
 parser.add_argument('--show', action='store_true')
 parser.add_argument('--sync', default=[], action='append')
 parser.add_argument('--ls')
+parser.add_argument('--archive', nargs=2)
+parser.add_argument('--extract', nargs=2)
+
 
 from bmst.backup_app import make_backup
 from bmst.managed import BMST, check_bmst, dumb_sync
@@ -28,14 +31,13 @@ def main():
     print('using store', opts.store)
     bmst = get_bmst(opts.store)
 
-    for source in opts.sync:
-        print('pulling from', source)
-        other = get_bmst(source)
-        dumb_sync(source=other.meta, target=bmst.meta)
-        dumb_sync(source=other.blobs, target=bmst.blobs)
+
+    if opts.sync:
+        sync(bmst, opts.sync)
 
     if opts.check:
         check_bmst(bmst)
+
 
     for to_backup in opts.backup:
         path = py.path.local(to_backup)
@@ -71,3 +73,11 @@ def get_bmst(path):
         meta = FileStore(root.ensure('meta', dir=1))
         blobs = FileStore(root.ensure('blobs', dir=1))
     return BMST(meta=meta, blobs=blobs)
+
+
+def sync(target, sources):
+    for source in sources:
+        print('pulling from', source)
+        other = get_bmst(source)
+        dumb_sync(source=other.meta, target=target.meta)
+        dumb_sync(source=other.blobs, target=target.blobs)
