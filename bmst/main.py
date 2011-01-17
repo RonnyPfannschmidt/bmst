@@ -51,12 +51,15 @@ def main():
         pprint.pprint(list(bmst.meta))
 
     if opts.ls:
+        assert opts.key, 'omg key missing'
         print(json.dumps(
             bmst.load_meta(key=opts.key),
             indent=2,
             sort_keys=True,
         ))
 
+    if opts.extract:
+        extract(bmst, opts.key, opts.target)
 
     if opts.serve:
         from bmst.wsgi import app
@@ -83,3 +86,11 @@ def sync(target, sources):
         other = get_bmst(source)
         dumb_sync(source=other.meta, target=target.meta)
         dumb_sync(source=other.blobs, target=target.blobs)
+
+
+def extract(bmst, key, target):
+    target = py.path.local(target)
+    meta = bmst.load_meta(key=key)
+    for name, key in meta['items'].items():
+        data = bmst.load_blob(key=key)
+        target.ensure(name).write(data)
