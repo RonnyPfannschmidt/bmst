@@ -11,10 +11,10 @@ parser.add_argument('-d', '--debug', action='store_true')
 parser.add_argument('-c', '--check', action='store_true')
 parser.add_argument('--backup', default=[], action='append')
 parser.add_argument('--serve', action='store_true')
-
+parser.add_argument('--sync', default=[], action='append')
 
 from bmst.backup_app import make_backup
-from bmst.managed import BMST, check_bmst
+from bmst.managed import BMST, check_bmst, dumb_sync
 from bmst.store import FileStore, Httplib2Store
 
 
@@ -25,12 +25,20 @@ def main():
     print('using store', opts.store)
     bmst = get_bmst(opts.store)
 
+    for source in opts.sync:
+        print('pulling from', source)
+        other = get_bmst(source)
+        dumb_sync(source=other.meta, target=bmst.meta)
+        dumb_sync(source=other.blobs, target=bmst.blobs)
+
     if opts.check:
         check_bmst(bmst)
 
     for to_backup in opts.backup:
         path = py.path.local(to_backup)
         make_backup(root=path, bmst=bmst)
+
+
 
     if opts.serve:
         from bmst.wsgi import app
