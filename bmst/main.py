@@ -61,6 +61,9 @@ def main():
     if opts.extract:
         extract(bmst, opts.key, opts.target)
 
+    if opts.archive:
+        archive(bmst, opts.key, opts.target)
+
     if opts.serve:
         from bmst.wsgi import app
         app.bmst = bmst
@@ -89,8 +92,32 @@ def sync(target, sources):
 
 
 def extract(bmst, key, target):
+    print('extracting to', target)
     target = py.path.local(target)
     meta = bmst.load_meta(key=key)
     for name, key in meta['items'].items():
         data = bmst.load_blob(key=key)
         target.ensure(name).write(data)
+
+
+
+def archive(bmst, key, target):
+    from mercurial import archival
+    kind = archival.guesskind(target)
+    if kind is None:
+        print('unknown archive type for', target)
+    archiver = archival.archivers[kind]
+    #XXX should it use the project + data s prefix?
+    prefix = archival.tidyprefix(target, kind, '')
+
+    def write(name, data):
+        archiver.addfile('%s/%s' % (prefix, name), 0755, False, data)
+
+    meta = bmst.load_meta(key=key)
+    print('archiving to', target)
+    archiver = archiver(target, meta['timestamp'])
+    for name, key in meta['items'].items():
+        data = bmst.load_blob(key=key)
+        write(name, data)
+
+    archiver.done()
