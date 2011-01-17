@@ -2,6 +2,7 @@ from __future__ import print_function
 import argparse
 import shlex
 import py
+import json
 
 parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
 parser.convert_arg_line_to_args = shlex.split
@@ -11,7 +12,9 @@ parser.add_argument('-d', '--debug', action='store_true')
 parser.add_argument('-c', '--check', action='store_true')
 parser.add_argument('--backup', default=[], action='append')
 parser.add_argument('--serve', action='store_true')
+parser.add_argument('--show', action='store_true')
 parser.add_argument('--sync', default=[], action='append')
+parser.add_argument('--ls')
 
 from bmst.backup_app import make_backup
 from bmst.managed import BMST, check_bmst, dumb_sync
@@ -38,6 +41,17 @@ def main():
         path = py.path.local(to_backup)
         make_backup(root=path, bmst=bmst)
 
+
+    import pprint
+    if opts.show:
+        pprint.pprint(list(bmst.meta))
+
+    if opts.ls:
+        print(json.dumps(
+            bmst.load_meta(key=opts.ls),
+            indent=2,
+            sort_keys=True,
+        ))
 
 
     if opts.serve:
