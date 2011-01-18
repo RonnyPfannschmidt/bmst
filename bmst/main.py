@@ -6,7 +6,7 @@ import json
 
 
 from bmst.backup_app import make_backup
-from bmst.managed import BMST, check_bmst, dumb_sync
+from bmst.managed import BMST, check_bmst
 from bmst.store import FileStore, Httplib2Store
 from bmst.utils import archive, extract, sync, get_bmst
 

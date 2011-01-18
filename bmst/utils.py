@@ -1,8 +1,8 @@
 from __future__ import print_function
 import json
 import py
-from bmst.managed import dumb_sync, BMST
-from bmst.store import FileStore, Httplib2Store
+from bmst.managed import BMST
+from bmst.store import FileStore, Httplib2Store, dumb_sync
 
 
 def get_bmst(path):

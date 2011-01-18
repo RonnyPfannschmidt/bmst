@@ -4,6 +4,9 @@ import hashlib
 
 
 def find_missing_blobs(expected, store):
+    """
+    utility to check if any blobs for a meta item are missing
+    """
     keys = set(store.keys())
     missing = {}
     for name, value in expected.items():
@@ -15,19 +18,16 @@ def find_missing_blobs(expected, store):
 
 
 def sha1(data):
+    """
+    shortcut to get a hexdigest sha1 of some data
+    """
     return hashlib.sha1(data).hexdigest()
 
 
-def dumb_sync(source, target):
-    """
-    sync items from source to target
-    """
-    to_sync = set(source) - set(target)
-    for item in to_sync:
-        target[item] = source[item]
-
-
 def check_store(bmst, kind):
+    """
+    check hash consistency of the store `kind` in `bmst`
+    """
     print 'checking', kind
     store = getattr(bmst, kind)
     errors = []
@@ -41,6 +41,9 @@ def check_store(bmst, kind):
 
 
 def check_references(bmst):
+    """
+    check if all blobs required for the mea items exist
+    """
     print 'checking references'
     all_missing = {}
     for item in bmst.meta:
@@ -53,6 +56,9 @@ def check_references(bmst):
 
 
 def find_orphans(bmst):
+    """
+    search for unreferenced blobs
+    """
     print 'searching orphan blobs'
     known = set(bmst.blobs)
     for item in bmst.meta:
@@ -82,6 +88,9 @@ def check_bmst(bmst):
 
 
 def encode_data(raw_data, key):
+    """
+    utility function to check or generate the key of a data item and compress it in one step
+    """
     computed_key = sha1(raw_data)
     if key is not None and computed_key != key:
         raise ValueError('%r != %r)' % (key, computed_key))
