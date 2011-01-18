@@ -98,6 +98,9 @@ def extract(bmst, key, target):
 
 
 def archive(bmst, key, target):
+    """
+    create the archive `target` from the iems of the metadata stored at `key`
+    """
     from mercurial import archival
     kind = archival.guesskind(target)
     if kind is None:
@@ -112,6 +115,7 @@ def archive(bmst, key, target):
     meta = bmst.load_meta(key=key)
     print('archiving to', target)
     archiver = archiver(target, meta['timestamp'])
+    write('.bmst', json.dumps(meta, indent=2, sort_keys=1))
     for name, key in meta['items'].items():
         data = bmst.load_blob(key=key)
         write(name, data)
