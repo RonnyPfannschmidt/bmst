@@ -1,3 +1,7 @@
+"""
+    Basic utilities for the combined blob+metadata store
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
 import json
 import bz2
 import hashlib
