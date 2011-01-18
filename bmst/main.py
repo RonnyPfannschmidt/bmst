@@ -33,18 +33,15 @@ def main():
     print('using store', opts.store)
     bmst = get_bmst(opts.store)
 
-
     if opts.sync:
         sync(bmst, opts.sync)
 
     if opts.check:
         check_bmst(bmst)
 
-
     for to_backup in opts.backup:
         path = py.path.local(to_backup)
         make_backup(root=path, bmst=bmst)
-
 
     import pprint
     if opts.show:
@@ -98,7 +95,6 @@ def extract(bmst, key, target):
     for name, key in meta['items'].items():
         data = bmst.load_blob(key=key)
         target.ensure(name).write(data)
-
 
 
 def archive(bmst, key, target):
