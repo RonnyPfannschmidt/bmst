@@ -6,6 +6,9 @@ from bmst.store import FileStore, Httplib2Store
 
 
 def get_bmst(path):
+    """
+    make a simple bmst inance by choosing between http/paths and joining them with blibs/meta for the subitems
+    """
     if path.startswith('http'):
         path = path.rstrip('/')
         blobs = Httplib2Store(path + '/blobs/')
@@ -19,6 +22,13 @@ def get_bmst(path):
 
 
 def sync(target, sources):
+    """
+    pull new meta items from all given sources
+
+    it shouldnt be interupted, since it syncs meta items first
+    unless the blobs get synced as well there will be missing references
+    the idea behind this order is that orphan blobs after a complete sync are better than mising blobs
+    """
     for source in sources:
         print('pulling from', source)
         other = get_bmst(source)
@@ -27,6 +37,9 @@ def sync(target, sources):
 
 
 def extract(bmst, key, target):
+    """
+    load the metadata at key and extract it to target
+    """
     print('extracting to', target)
     target = py.path.local(target)
     meta = bmst.load_meta(key=key)
