@@ -1,3 +1,7 @@
+"""
+    Extra utilities used by the cli
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
 from __future__ import print_function
 import json
 import py
