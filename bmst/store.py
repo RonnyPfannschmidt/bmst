@@ -1,9 +1,20 @@
+"""
+    Basic Store APIS
+    ~~~~~~~~~~~~~~~~
+
+    in general a store is a mutable mapping that will not allow delete
+"""
+
+
 import py
 import collections
 import json
 
 
 class BaseStore(collections.MutableMapping):
+    """
+    convience base class implementing osme defualt methods for stores
+    """
     def __len__(self):
         return len(self.keys())
 
@@ -15,6 +26,11 @@ class BaseStore(collections.MutableMapping):
 
 
 class FileStore(BaseStore):
+    """
+    stores items within a directory
+
+    :param path: a `py.path.local` instance of the directory
+    """
     def __init__(self, path):
         self.path = path
 
@@ -35,10 +51,17 @@ class FileStore(BaseStore):
 
 
 class Httplib2Store(BaseStore):
-    def __init__(self, base):
+    """
+    http using store
+
+    uses get/put
+
+    :param url: the url to use
+    """
+    def __init__(self, url):
         import httplib2
         self.http = httplib2.Http()
-        self.url = base
+        self.url = url
 
     def __getitem__(self, key):
         headers, content = self.http.request(self.url + key)
