@@ -2,9 +2,9 @@ Commandline Usage
 ==================
 
 
-.. programm:: bmst
+.. program:: bmst
 
-.. options:: -s <store>, --store <store>
+.. option:: -s <store>, --store <store>
 
   required, tells the primary data store
 
