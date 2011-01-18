@@ -98,11 +98,28 @@ def encode_data(raw_data, key):
 
 
 class BMST(object):
+    """
+    this class combines a store for meta items and a store for blobs
+    to something that can store backups or whatever else desired
+
+    it takes care of checking keys, encoding metadata to json
+    and bz2 compressing data before storing
+
+    :param blobs: the store for the blobs
+    :param meta: the store for meta item
+    """
+
     def __init__(self, blobs, meta):
         self.blobs = blobs
         self.meta = meta
 
     def store_meta(self, key=None, mapping=None):
+        """
+        :param key: the expected sha1 id
+        :param mapping: the json compatible data for this item
+
+        store a new meta item
+        """
 
         missing = find_missing_blobs(mapping['items'], self.blobs)
         if missing:
@@ -116,12 +133,19 @@ class BMST(object):
         return key
 
     def load_meta(self, key):
+        """
+        load and json-deserialize a metadata item
+        """
         return json.loads(bz2.decompress(self.meta[key]))
 
     def store_blob(self, key=None, data=None):
+        """
+        store a compressed blob
+        """
         key, encoded = encode_data(data, key)
         self.blobs[key] = encoded
         return key
 
     def load_blob(self, key):
+        """load and decompress a blob"""
         return bz2.decompress(self.blobs[key])
