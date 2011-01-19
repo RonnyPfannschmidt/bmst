@@ -8,6 +8,6 @@ setup(
         'httplib2',
         'werkzeug',
         'py',
-        'apipkg',
+        'mercurial',
     ],
 )
