@@ -32,14 +32,14 @@ def check_store(bmst, kind):
     """
     check hash consistency of the store `kind` in `bmst`
     """
-    print 'checking', kind
+    print("checking", kind)
     store = getattr(bmst, kind)
     errors = []
     for item in store:
         raw = bz2.decompress(store[item])
         sha = sha1(raw)
         if sha != item:
-            print 'E: item', item, 'got hash', sha, 'instead'
+            print("E: item", item, "got hash", sha, "instead")
             errors.append(item)
     return errors
 
@@ -48,13 +48,13 @@ def check_references(bmst):
     """
     check if all blobs required for the mea items exist
     """
-    print 'checking references'
+    print("checking references")
     all_missing = {}
     for item in bmst.meta:
         data = bmst.load_meta(item)
-        missing = find_missing_blobs(data['items'], bmst.blobs)
+        missing = find_missing_blobs(data["items"], bmst.blobs)
         if missing:
-            print 'E: missing blobs for meta, item', item
+            print("E: missing blobs for meta, item", item)
             all_missing[item] = missing
     return all_missing
 
@@ -63,21 +63,22 @@ def find_orphans(bmst):
     """
     search for unreferenced blobs
     """
-    print 'searching orphan blobs'
+    print("searching orphan blobs")
     known = set(bmst.blobs)
     for item in bmst.meta:
         data = bmst.load_meta(item)
-        known -= set(data['items'].values())
+        known -= set(data["items"].values())
     if known:
-        print 'E: found %s orphans' % len(known)
+        print("E: found %s orphans" % len(known))
     return known
 
+
 checks = [
-    (check_store, 'blobs'),
-    (check_store, 'meta'),
-    #XXX meta items vaid json test is missing
+    (check_store, "blobs"),
+    (check_store, "meta"),
+    # XXX meta items vaid json test is missing
     (check_references,),
-    (find_orphans, ),
+    (find_orphans,),
 ]
 
 
@@ -93,11 +94,12 @@ def check_bmst(bmst):
 
 def encode_data(raw_data, key):
     """
-    utility function to check or generate the key of a data item and compress it in one step
+    utility function to check or generate the key of a data item
+    and compress it in one step
     """
     computed_key = sha1(raw_data)
     if key is not None and computed_key != key:
-        raise ValueError('%r != %r)' % (key, computed_key))
+        raise ValueError("%r != %r)" % (key, computed_key))
     return computed_key, bz2.compress(raw_data)
 
 
@@ -125,12 +127,12 @@ class BMST(object):
         store a new meta item
         """
 
-        missing = find_missing_blobs(mapping['items'], self.blobs)
+        missing = find_missing_blobs(mapping["items"], self.blobs)
         if missing:
             raise LookupError(missing)
 
         raw_data = json.dumps(mapping, indent=2, sort_keys=True)
-        raw_data = raw_data.encode('utf-8')
+        raw_data = raw_data.encode("utf-8")
         key, encoded = encode_data(raw_data, key)
         self.meta[key] = encoded
 

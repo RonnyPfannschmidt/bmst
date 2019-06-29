@@ -17,17 +17,11 @@ def basemeta(root):
         # asume collisions are unlikely enough
         blobs[hash] = content
 
-    return {
-        'items': item_meta,
-        'timestamp': mtime,
-    }, blobs
+    return {"items": item_meta, "timestamp": mtime}, blobs
 
 
 def guessmeta(root):
-    return {
-        'project': root.basename,
-        'tags': ['backup'],
-    }
+    return {"project": root.basename, "tags": ["backup"]}
 
 
 def load_tree(root):
@@ -35,13 +29,13 @@ def load_tree(root):
     mtime = 0
     for x in root.visit():
         if x.check(file=1):
-            results[x.relto(root)] = x.computehash('sha1'), x.read('rb')
+            results[x.relto(root)] = x.computehash("sha1"), x.read("rb")
         mtime = max(mtime, x.mtime())
     return results, mtime
 
 
 def make_backup(root, bmst):
-    print('backing up', root)
+    print("backing up", root)
     meta, blobs = fullmeta(root)
     try:
         return bmst.store_meta(mapping=meta)

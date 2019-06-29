@@ -10,28 +10,28 @@ from bmst.managed import BMST, check_bmst
 from bmst.store import FileStore, Httplib2Store
 from bmst.utils import archive, extract, sync, get_bmst
 
-parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
+parser = argparse.ArgumentParser(fromfile_prefix_chars="@")
 parser.convert_arg_line_to_args = shlex.split
 
-parser.add_argument('-s', '--store', required=True)
-parser.add_argument('-d', '--debug', action='store_true')
-parser.add_argument('-c', '--check', action='store_true')
-parser.add_argument('--backup', default=[], action='append')
-parser.add_argument('--serve', action='store_true')
-parser.add_argument('--show', action='store_true')
-parser.add_argument('--sync', default=[], action='append')
-parser.add_argument('--ls', action='store_true')
-parser.add_argument('--archive', action='store_true')
-parser.add_argument('--extract', action='store_true')
-parser.add_argument('key', default=None, nargs='?')
-parser.add_argument('target', default=None, nargs='?')
+parser.add_argument("-s", "--store", required=True)
+parser.add_argument("-d", "--debug", action="store_true")
+parser.add_argument("-c", "--check", action="store_true")
+parser.add_argument("--backup", default=[], action="append")
+parser.add_argument("--serve", action="store_true")
+parser.add_argument("--show", action="store_true")
+parser.add_argument("--sync", default=[], action="append")
+parser.add_argument("--ls", action="store_true")
+parser.add_argument("--archive", action="store_true")
+parser.add_argument("--extract", action="store_true")
+parser.add_argument("key", default=None, nargs="?")
+parser.add_argument("target", default=None, nargs="?")
 
 
 def main():
     opts = parser.parse_args()
     if opts.debug:
         print(opts)
-    print('using store', opts.store)
+    print("using store", opts.store)
     bmst = get_bmst(opts.store)
 
     if opts.sync:
@@ -45,16 +45,13 @@ def main():
         make_backup(root=path, bmst=bmst)
 
     import pprint
+
     if opts.show:
         pprint.pprint(list(bmst.meta))
 
     if opts.ls:
-        assert opts.key, 'omg key missing'
-        print(json.dumps(
-            bmst.load_meta(key=opts.key),
-            indent=2,
-            sort_keys=True,
-        ))
+        assert opts.key, "omg key missing"
+        print(json.dumps(bmst.load_meta(key=opts.key), indent=2, sort_keys=True))
 
     if opts.extract:
         extract(bmst, opts.key, opts.target)
@@ -64,5 +61,6 @@ def main():
 
     if opts.serve:
         from bmst.wsgi import app
+
         app.bmst = bmst
         app.run()

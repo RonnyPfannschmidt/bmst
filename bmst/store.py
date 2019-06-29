@@ -20,8 +20,9 @@ def dumb_sync(source, target):
 
 class BaseStore(collections.MutableMapping):
     """
-    convience base class implementing osme defualt methods for stores
+    convience base class implementing basic methods for stores
     """
+
     def __len__(self):
         return len(self.keys())
 
@@ -38,11 +39,12 @@ class FileStore(BaseStore):
 
     :param path: a `py.path.local` instance of the directory
     """
+
     def __init__(self, path):
         self.path = path
 
     def __setitem__(self, key, data):
-        self.path.join(key).write(data, 'wb')
+        self.path.join(key).write(data, "wb")
 
     def __getitem__(self, key):
         try:
@@ -65,25 +67,23 @@ class Httplib2Store(BaseStore):
 
     :param url: the url to use
     """
+
     def __init__(self, url):
         import httplib2
+
         self.http = httplib2.Http()
         self.url = url
 
     def __getitem__(self, key):
         headers, content = self.http.request(self.url + key)
-        if headers['status'] == '404':
+        if headers["status"] == "404":
             raise KeyError(key)
         return content
 
     def __setitem__(self, key, value):
-        self.http.request(
-            self.url + key,
-            method='PUT',
-            body=value,
-        )
+        self.http.request(self.url + key, method="PUT", body=value)
 
     def keys(self):
         headers, content = self.http.request(self.url)
-        #XXX: check headers
+        # XXX: check headers
         return json.loads(content)
