@@ -2,11 +2,14 @@
     Extra utilities used by the cli
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
-from __future__ import print_function
 import json
+
 import py
+
 from bmst.managed import BMST
-from bmst.store import FileStore, Httplib2Store, dumb_sync
+from bmst.store import dumb_sync
+from bmst.store import FileStore
+from bmst.store import Httplib2Store
 
 
 def get_bmst(path):
@@ -69,7 +72,7 @@ def archive(bmst, key, target):
     prefix = archival.tidyprefix(target, kind, "")
 
     def write(name, data):
-        archiver.addfile("%s/%s" % (prefix, name), 0x755, False, data)
+        archiver.addfile("{}/{}".format(prefix, name), 0x755, False, data)
 
     meta = bmst.load_meta(key=key)
     print("archiving to", target)

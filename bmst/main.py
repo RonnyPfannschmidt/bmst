@@ -1,14 +1,18 @@
-from __future__ import print_function
 import argparse
-import shlex
-import py
 import json
+import shlex
 
+import py
 
 from bmst.backup_app import make_backup
-from bmst.managed import BMST, check_bmst
-from bmst.store import FileStore, Httplib2Store
-from bmst.utils import archive, extract, sync, get_bmst
+from bmst.managed import BMST
+from bmst.managed import check_bmst
+from bmst.store import FileStore
+from bmst.store import Httplib2Store
+from bmst.utils import archive
+from bmst.utils import extract
+from bmst.utils import get_bmst
+from bmst.utils import sync
 
 parser = argparse.ArgumentParser(fromfile_prefix_chars="@")
 parser.convert_arg_line_to_args = shlex.split

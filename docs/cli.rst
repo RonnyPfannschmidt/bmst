@@ -20,14 +20,14 @@ Commandline Usage
 
   print a listing of the metadata items
 
-.. option --ls <key>
+.. option:: --ls <key>
 
   print the metadata of the item refered by key
 
 .. option:: --archive <key> <target>
 
-  creatr an compressed archive (tarball/zip) from the items of the metadata item refered by key
+  create an compressed archive (tarball/zip) from the items of the metadata item refered by key
 
 .. option:: --extract <key> <target>
 
-  restore the items refered by the metadata of `key` as files below target
+  restore the items refered by the metadata of ``key`` as files below target

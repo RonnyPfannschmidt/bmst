@@ -2,9 +2,9 @@
     Basic utilities for the combined blob+metadata store
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
-import json
 import bz2
 import hashlib
+import json
 
 
 def find_missing_blobs(expected, store):
@@ -99,11 +99,11 @@ def encode_data(raw_data, key):
     """
     computed_key = sha1(raw_data)
     if key is not None and computed_key != key:
-        raise ValueError("%r != %r)" % (key, computed_key))
+        raise ValueError("{!r} != {!r})".format(key, computed_key))
     return computed_key, bz2.compress(raw_data)
 
 
-class BMST(object):
+class BMST:
     """
     this class combines a store for meta items and a store for blobs
     to something that can store backups or whatever else desired

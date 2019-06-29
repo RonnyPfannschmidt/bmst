@@ -4,9 +4,10 @@
 
     in general a store is a mutable mapping that will not allow delete
 """
-import py
 import collections
 import json
+
+import py
 
 
 def dumb_sync(source, target):

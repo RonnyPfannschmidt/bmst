@@ -1,6 +1,3 @@
-from __future__ import print_function
-
-
 def fullmeta(root):
     meta, blobs = basemeta(root)
     meta.update(guessmeta(root))

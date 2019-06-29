@@ -1,4 +1,5 @@
 from distutils.core import setup
+
 from hgdistver import get_version
 
 setup(

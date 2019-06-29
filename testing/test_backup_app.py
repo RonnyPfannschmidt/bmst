@@ -1,6 +1,9 @@
 import bz2
 import json
-from bmst.backup_app import load_tree, fullmeta, make_backup
+
+from bmst.backup_app import fullmeta
+from bmst.backup_app import load_tree
+from bmst.backup_app import make_backup
 from bmst.managed import BMST
 
 

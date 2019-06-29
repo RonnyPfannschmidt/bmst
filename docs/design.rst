@@ -12,9 +12,9 @@ The on Disk Format is designed for simplicity and rsync-support
 There are 2 kinds of object, thus 2 subdirectories.
 
 * blobs store binary items, they are below blobs using a finename sheme of
-  root/'blob'/sha[:2]/sha[2:]
+  ``root/'blob'/sha[:2]/sha[2:]``
 
-* metadata items store compressed json objects below 'meta'
+* metadata items store compressed json objects below ``meta``
   the metadata files should be pretty-printed json, using the indent of 2 spaces
 
 

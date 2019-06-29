@@ -1,6 +1,9 @@
-import py
-from bmst.managed import BMST, find_missing_blobs
 import bz2
+
+import py
+
+from bmst.managed import BMST
+from bmst.managed import find_missing_blobs
 
 
 def pytest_funcarg__store(request):
