@@ -15,13 +15,13 @@ def setup_module(mod):
 
 def pytest_generate_tests(metafunc):
     if "store" in metafunc.funcargnames:
-        metafunc.addcall(id="file", param=file)
+        metafunc.addcall(id="file", param=open)
         metafunc.addcall(id="map", param=dict)
         metafunc.addcall(id="http", param=None)
 
 
 def pytest_funcarg__store(request):
-    if request.param is file:
+    if request.param is open:
         return FileStore(request.getfuncargvalue("tmpdir"))
     if request.param is dict:
         return {}

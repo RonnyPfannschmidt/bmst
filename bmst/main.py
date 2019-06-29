@@ -5,10 +5,7 @@ import shlex
 import py
 
 from bmst.backup_app import make_backup
-from bmst.managed import BMST
 from bmst.managed import check_bmst
-from bmst.store import FileStore
-from bmst.store import Httplib2Store
 from bmst.utils import archive
 from bmst.utils import extract
 from bmst.utils import get_bmst

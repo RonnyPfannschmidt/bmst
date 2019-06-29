@@ -37,8 +37,10 @@ def test_makebackup(tmpdir):
     bmst = BMST(blobs={}, meta={})
     make_backup(tmpdir.join("root"), bmst)
     assert bmst.blobs == {
-        "4e1243bd22c66e76c2ba9eddc1f91394e57f9f83": b"BZh91AY&SY\xcc\xc3q\xd4\x00\x00\x02A\x80\x00\x10\x02\x00\x0c\x00"
-        b' \x00!\x9ah3M\x19\x97\x8b\xb9"\x9c(Hfa\xb8\xea\x00'
+        "4e1243bd22c66e76c2ba9eddc1f91394e57f9f83": (
+            b"BZh91AY&SY\xcc\xc3q\xd4\x00\x00\x02A\x80\x00\x10\x02\x00\x0c\x00"
+            b' \x00!\x9ah3M\x19\x97\x8b\xb9"\x9c(Hfa\xb8\xea\x00'
+        )
     }
     key, = bmst.meta.keys()
     data = bz2.decompress(bmst.meta[key])

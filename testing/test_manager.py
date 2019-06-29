@@ -1,5 +1,3 @@
-import bz2
-
 import py
 
 from bmst.managed import BMST
