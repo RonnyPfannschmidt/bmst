@@ -3,6 +3,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 import bz2
+import attr
 import hashlib
 import json
 
@@ -103,6 +104,7 @@ def encode_data(raw_data, key):
     return computed_key, bz2.compress(raw_data)
 
 
+@attr.s
 class BMST:
     """
     this class combines a store for meta items and a store for blobs
@@ -114,10 +116,8 @@ class BMST:
     :param blobs: the store for the blobs
     :param meta: the store for meta item
     """
-
-    def __init__(self, blobs, meta):
-        self.blobs = blobs
-        self.meta = meta
+    blobs = attr.ib(repr=False)
+    meta = attr.ib(repr=False)
 
     def store_meta(self, key=None, mapping=None):
         """

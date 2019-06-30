@@ -2,7 +2,7 @@
     Extra utilities used by the cli
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
-from Pathlib import Path
+from pathlib import Path
 
 from bmst.managed import BMST
 from bmst.store import dumb_sync
