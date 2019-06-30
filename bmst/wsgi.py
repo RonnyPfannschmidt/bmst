@@ -1,14 +1,20 @@
 import json
+
 import attr
-from werkzeug.routing import Map, Rule, NotFound
-from werkzeug.wrappers import Request, Response
+from werkzeug.routing import Map
+from werkzeug.routing import NotFound
+from werkzeug.routing import Rule
+from werkzeug.wrappers import Request
+from werkzeug.wrappers import Response
 
 
-url_map = Map([
-    Rule("/<any(meta,blobs):kind>/", methods=("GET",), endpoint="list"),
-    Rule("/<any(meta,blobs):kind>/<key>", methods=("GET",), endpoint="load"),
-    Rule("/<any(meta,blobs):kind>/<key>", methods=("PUT",), endpoint="save"),
-])
+url_map = Map(
+    [
+        Rule("/<any(meta,blobs):kind>/", methods=("GET",), endpoint="list"),
+        Rule("/<any(meta,blobs):kind>/<key>", methods=("GET",), endpoint="load"),
+        Rule("/<any(meta,blobs):kind>/<key>", methods=("PUT",), endpoint="save"),
+    ]
+)
 
 
 @attr.s
@@ -26,9 +32,7 @@ class WsgiApp:
         return method(request, self._store(args.pop("kind")), **args)
 
     def list(self, request, store):
-        return Response(
-            json.dumps(list(store)),
-            mimetype="application/json")
+        return Response(json.dumps(list(store)), mimetype="application/json")
 
     def load(self, request, store, key):
         try:

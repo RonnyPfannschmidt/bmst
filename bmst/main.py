@@ -2,8 +2,6 @@ import argparse
 import json
 import shlex
 
-import py
-
 from bmst.backup_app import make_backup
 from bmst.managed import check_bmst
 from bmst.utils import archive
@@ -42,7 +40,7 @@ def main():
         check_bmst(bmst)
 
     for to_backup in opts.backup:
-        path = py.path.local(to_backup)
+        path = Path(to_backup)
         make_backup(root=path, bmst=bmst)
 
     import pprint

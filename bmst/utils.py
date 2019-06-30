@@ -2,9 +2,7 @@
     Extra utilities used by the cli
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
-import json
-
-import py
+from Pathlib import Path
 
 from bmst.managed import BMST
 from bmst.store import dumb_sync
@@ -22,10 +20,10 @@ def get_bmst(path):
         blobs = Httplib2Store(path + "/blobs/")
         meta = Httplib2Store(path + "/meta/")
     else:
-        root = py.path.local(path)
-        root.ensure(dir=1)
-        meta = FileStore(root.ensure("meta", dir=1))
-        blobs = FileStore(root.ensure("blobs", dir=1))
+        root = Path(path)
+        root.mkdir(exists_ok=True, parents=True)
+        meta = FileStore.ensure(root / "meta")
+        blobs = FileStore.ensure(root / "blobs")
     return BMST(meta=meta, blobs=blobs)
 
 
@@ -50,36 +48,10 @@ def extract(bmst, key, target):
     load the metadata at key and extract it to target
     """
     print("extracting to", target)
-    target = py.path.local(target)
+    target = Path(target)
     meta = bmst.load_meta(key=key)
     for name, key in meta["items"].items():
         data = bmst.load_blob(key=key)
-        target.ensure(name).write(data)
-
-
-def archive(bmst, key, target):
-    """
-    create the archive `target` from the iems of the metadata stored at `key`
-    """
-    from mercurial import archival
-
-    kind = archival.guesskind(target)
-    if kind is None:
-        print("unknown archive type for", target)
-        return
-    archiver = archival.archivers[kind]
-    # XXX should it use the project + data s prefix?
-    prefix = archival.tidyprefix(target, kind, "")
-
-    def write(name, data):
-        archiver.addfile("{}/{}".format(prefix, name), 0x755, False, data)
-
-    meta = bmst.load_meta(key=key)
-    print("archiving to", target)
-    archiver = archiver(target, meta["timestamp"])
-    write(".bmst", json.dumps(meta, indent=2, sort_keys=1))
-    for name, key in meta["items"].items():
-        data = bmst.load_blob(key=key)
-        write(name, data)
-
-    archiver.done()
+        target_file = target / name
+        target_file.parent.mkdir(exists_ok=True, parent=True)
+        target.write_bytes(data)

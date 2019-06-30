@@ -1,26 +1,39 @@
 import bz2
 import json
 
+import pytest
+
 from bmst.backup_app import fullmeta
 from bmst.backup_app import load_tree
 from bmst.backup_app import make_backup
 from bmst.managed import BMST
+from bmst.store import FileStore
 
 
-def test_load(tmpdir):
-    assert load_tree(tmpdir) == ({}, 0)
+@pytest.fixture(params=[dict, FileStore])
+def bmst(request):
+    if request.param is dict:
+        return BMST({}, {})
+    pytest.skip("not implemented")
 
-    tmpdir.ensure("a/b").write(b"test\n")
 
-    assert load_tree(tmpdir) == (
+def test_load(tmp_path):
+    assert load_tree(tmp_path) == ({}, 0)
+
+    create = tmp_path / "a/b"
+    create.parent.mkdir()
+    create.write_bytes(b"test\n")
+
+    assert load_tree(tmp_path) == (
         {"a/b": ("4e1243bd22c66e76c2ba9eddc1f91394e57f9f83", b"test\n")},
-        tmpdir.join("a/b").mtime(),
+        tmp_path.joinpath("a/b").stat().st_mtime,
     )
 
 
-def test_fullmeta(tmpdir):
-    root = tmpdir.ensure("root", dir=1)
-    root.join("test").write("test\n")
+def test_fullmeta(tmp_path):
+    root = tmp_path / "root"
+    root.mkdir()
+    root.joinpath("test").write_bytes(b"test\n")
     meta, blobs = fullmeta(root)
     assert meta == {
         "project": "root",
@@ -32,10 +45,9 @@ def test_fullmeta(tmpdir):
     assert blobs == {"4e1243bd22c66e76c2ba9eddc1f91394e57f9f83": b"test\n"}
 
 
-def test_makebackup(tmpdir):
-    test_fullmeta(tmpdir)
-    bmst = BMST(blobs={}, meta={})
-    make_backup(tmpdir.join("root"), bmst)
+def test_makebackup(tmp_path, bmst):
+    test_fullmeta(tmp_path)
+    make_backup(tmp_path / "root", bmst)
     assert bmst.blobs == {
         "4e1243bd22c66e76c2ba9eddc1f91394e57f9f83": (
             b"BZh91AY&SY\xcc\xc3q\xd4\x00\x00\x02A\x80\x00\x10\x02\x00\x0c\x00"

@@ -1,3 +1,6 @@
+from .managed import sha1
+
+
 def fullmeta(root):
     meta, blobs = basemeta(root)
     meta.update(guessmeta(root))
@@ -18,16 +21,18 @@ def basemeta(root):
 
 
 def guessmeta(root):
-    return {"project": root.basename, "tags": ["backup"]}
+    return {"project": root.name, "tags": ["backup"]}
 
 
 def load_tree(root):
     results = {}
     mtime = 0
-    for x in root.visit():
-        if x.check(file=1):
-            results[x.relto(root)] = x.computehash("sha1"), x.read("rb")
-        mtime = max(mtime, x.mtime())
+    for x in root.glob("**/*"):
+        if x.is_file():
+            data = x.read_bytes()
+            content_hash = sha1(data)
+            results[str(x.relative_to(root))] = content_hash, data
+        mtime = max(mtime, x.stat().st_mtime)
     return results, mtime
 
 

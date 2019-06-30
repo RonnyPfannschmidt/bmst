@@ -4,12 +4,11 @@
 
     in general a store is a mutable mapping that will not allow delete
 """
-import attr
-import pathlib
 import collections.abc
 import json
+import pathlib
 
-import py
+import attr
 
 
 def dumb_sync(source, target):
@@ -45,6 +44,11 @@ class FileStore(BaseStore):
     """
 
     path = attr.ib(converter=pathlib.Path)
+
+    @classmethod
+    def ensure(cls, path: pathlib.Path):
+        path.mkdir(exists_ok=True, parents=True)
+        return cls(path)
 
     def _itempath(self, key):
         return self.path / key
