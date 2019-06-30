@@ -1,5 +1,7 @@
-import pytest
 import hashlib
+
+import pytest
+
 from bmst.managed import BMST
 from bmst.store import FileStore
 from bmst.store import Httplib2Store
@@ -13,11 +15,13 @@ def setup_module(mod):
     install()
 
 
-@pytest.fixture(params=[
-    pytest.param(open, id="file"),
-    pytest.param(dict, id="map"),
-    pytest.param(None, id="http")
-])
+@pytest.fixture(
+    params=[
+        pytest.param(open, id="file"),
+        pytest.param(dict, id="map"),
+        pytest.param(None, id="http"),
+    ]
+)
 def store(request, tmpdir):
     if request.param is open:
         return FileStore(tmpdir)
