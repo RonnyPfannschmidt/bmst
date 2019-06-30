@@ -4,7 +4,7 @@
 
     in general a store is a mutable mapping that will not allow delete
 """
-import collections
+import collections.abc
 import json
 
 import py
@@ -19,7 +19,7 @@ def dumb_sync(source, target):
         target[item] = source[item]
 
 
-class BaseStore(collections.MutableMapping):
+class BaseStore(collections.abc.MutableMapping):
     """
     convience base class implementing basic methods for stores
     """

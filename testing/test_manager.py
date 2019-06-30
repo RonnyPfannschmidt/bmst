@@ -1,16 +1,16 @@
-import py
-
+import pytest
 from bmst.managed import BMST
 from bmst.managed import find_missing_blobs
 
 
-def pytest_funcarg__store(request):
+@pytest.fixture
+def store(request):
     return BMST(blobs={}, meta={})
 
 
 def should_fail_put_meta_on_missing_blob(store):
 
-    with py.test.raises(LookupError) as excinfo:
+    with pytest.raises(LookupError) as excinfo:
         store.store_meta(mapping={"items": {"test": "123"}})
     assert excinfo.value[0] == {"test": "123"}
 

@@ -1,10 +1,10 @@
-import py
-
+import pytest
+import hashlib
 from bmst.managed import BMST
 from bmst.store import FileStore
 from bmst.store import Httplib2Store
 
-key = py.std.hashlib.sha1("test").hexdigest()
+key = hashlib.sha1(b"test").hexdigest()
 
 
 def setup_module(mod):
@@ -13,16 +13,14 @@ def setup_module(mod):
     install()
 
 
-def pytest_generate_tests(metafunc):
-    if "store" in metafunc.funcargnames:
-        metafunc.addcall(id="file", param=open)
-        metafunc.addcall(id="map", param=dict)
-        metafunc.addcall(id="http", param=None)
-
-
-def pytest_funcarg__store(request):
+@pytest.fixture(params=[
+    pytest.param(open, id="file"),
+    pytest.param(dict, id="map"),
+    pytest.param(None, id="http")
+])
+def store(request, tmpdir):
     if request.param is open:
-        return FileStore(request.getfuncargvalue("tmpdir"))
+        return FileStore(tmpdir)
     if request.param is dict:
         return {}
     if request.param is None:
@@ -36,20 +34,20 @@ def pytest_funcarg__store(request):
 
 
 def should_save(store):
-    store[key] = "test"
+    store[key] = b"test"
     assert key in store
 
 
 def should_fail_on_del(store):
     if type(store) is dict:
-        py.test.skip("del cant fail on dict")
-    with py.test.raises(TypeError):
+        pytest.skip("del cant fail on dict")
+    with pytest.raises(TypeError):
         del store[key]
 
 
 def should_load(store):
     should_save(store)
-    assert store[key] == "test"
+    assert store[key] == b"test"
 
 
 def should_list_items(store, tmpdir):
@@ -59,5 +57,5 @@ def should_list_items(store, tmpdir):
 
 
 def should_fail_on_get_unknown(store):
-    with py.test.raises(KeyError):
+    with pytest.raises(KeyError):
         store[key]
