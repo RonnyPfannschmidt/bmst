@@ -13,7 +13,7 @@ def should_fail_put_meta_on_missing_blob(store):
 
     with pytest.raises(LookupError) as excinfo:
         store.store_meta(mapping={"items": {"test": "123"}})
-    assert excinfo.value[0] == {"test": "123"}
+    assert excinfo.value.args[0] == {"test": "123"}
 
 
 def should_put_meta_on_existing_blob(store):

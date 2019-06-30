@@ -4,6 +4,8 @@
 
     in general a store is a mutable mapping that will not allow delete
 """
+import attr
+import pathlib
 import collections.abc
 import json
 
@@ -34,6 +36,7 @@ class BaseStore(collections.abc.MutableMapping):
         raise TypeError
 
 
+@attr.s
 class FileStore(BaseStore):
     """
     stores items within a directory
@@ -41,23 +44,25 @@ class FileStore(BaseStore):
     :param path: a `py.path.local` instance of the directory
     """
 
-    def __init__(self, path):
-        self.path = path
+    path = attr.ib(converter=pathlib.Path)
+
+    def _itempath(self, key):
+        return self.path / key
 
     def __setitem__(self, key, data):
-        self.path.join(key).write(data, "wb")
+        self._itempath(key).write_bytes(data)
 
     def __getitem__(self, key):
         try:
-            return self.path.join(key).read()
-        except py.error.ENOENT:
+            return self._itempath(key).read_bytes()
+        except FileNotFoundError:
             raise KeyError(key)
 
     def __contains__(self, key):
-        return self.path.join(key).check()
+        return self._itempath(key).is_file()
 
     def keys(self):
-        return [x.basename for x in self.path.listdir()]
+        return [x.name for x in self.path.iterdir()]
 
 
 class Httplib2Store(BaseStore):

@@ -28,9 +28,9 @@ def store(request, tmpdir):
     if request.param is dict:
         return {}
     if request.param is None:
-        from bmst.wsgi import app
+        from bmst.wsgi import WsgiApp
 
-        app.bmst = BMST(meta={}, blobs={})
+        app = WsgiApp(BMST(meta={}, blobs={}))
         import wsgi_intercept
 
         wsgi_intercept.add_wsgi_intercept("test_host", 80, lambda: app)
