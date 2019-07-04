@@ -27,7 +27,7 @@ def guessmeta(root):
 def load_tree(root):
     results = {}
     mtime = 0
-    for x in root.glob("**/*"):
+    for x in root.rglob("*"):
         if x.is_file():
             data = x.read_bytes()
             content_hash = sha1(data)
