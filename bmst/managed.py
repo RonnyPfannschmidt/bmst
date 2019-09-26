@@ -3,9 +3,10 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 import bz2
-import attr
 import hashlib
 import json
+
+import attr
 
 
 def find_missing_blobs(expected, store):
@@ -116,6 +117,7 @@ class BMST:
     :param blobs: the store for the blobs
     :param meta: the store for meta item
     """
+
     blobs = attr.ib(repr=False)
     meta = attr.ib(repr=False)
 
