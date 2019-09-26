@@ -5,7 +5,6 @@ from pathlib import Path
 
 from bmst.backup_app import make_backup
 from bmst.managed import check_bmst
-from bmst.utils import archive
 from bmst.utils import extract
 from bmst.utils import get_bmst
 from bmst.utils import sync
@@ -57,7 +56,9 @@ def main():
         extract(bmst, opts.key, opts.target)
 
     if opts.archive:
-        archive(bmst, opts.key, opts.target)
+        print("not implemented")
+        raise SystemExit(1)
+        # archive(bmst, opts.key, opts.target)
 
     if opts.serve:
         from bmst.wsgi import app

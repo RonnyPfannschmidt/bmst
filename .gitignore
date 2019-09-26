@@ -2,3 +2,6 @@ __pycache__
 .tox/
 *.pyc
 MANIFEST
+.env/
+*.egg-info/
+pip-wheel-metadata
