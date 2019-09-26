@@ -7,8 +7,8 @@ from bmst.backup_app import fullmeta
 from bmst.backup_app import load_tree
 from bmst.backup_app import make_backup
 from bmst.managed import BMST
-from bmst.store import FileStore
 from bmst.managed import sha1
+from bmst.store import FileStore
 
 CONTENT = b"test\n"
 CONTENT_HASH = sha1(CONTENT)
