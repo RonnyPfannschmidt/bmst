@@ -1,67 +1,84 @@
-import argparse
 import json
-import shlex
 from pathlib import Path
 
+import click
+import click_log
+
+from bmst import log
 from bmst.backup_app import make_backup
 from bmst.managed import check_bmst
-from bmst.utils import extract
+from bmst.utils import extract as internal_extract
 from bmst.utils import get_bmst
-from bmst.utils import sync
-
-parser = argparse.ArgumentParser(fromfile_prefix_chars="@")
-parser.convert_arg_line_to_args = shlex.split
-
-parser.add_argument("-s", "--store", required=True)
-parser.add_argument("-d", "--debug", action="store_true")
-parser.add_argument("-c", "--check", action="store_true")
-parser.add_argument("--backup", default=[], action="append")
-parser.add_argument("--serve", action="store_true")
-parser.add_argument("--show", action="store_true")
-parser.add_argument("--sync", default=[], action="append")
-parser.add_argument("--ls", action="store_true")
-parser.add_argument("--archive", action="store_true")
-parser.add_argument("--extract", action="store_true")
-parser.add_argument("key", default=None, nargs="?")
-parser.add_argument("target", default=None, nargs="?")
+from bmst.utils import sync as internal_sync
 
 
-def main():
-    opts = parser.parse_args()
-    if opts.debug:
-        print(opts)
-    print("using store", opts.store)
-    bmst = get_bmst(opts.store)
+key_arg = click.argument("key")
 
-    if opts.sync:
-        sync(bmst, opts.sync)
 
-    if opts.check:
-        check_bmst(bmst)
+@click.group()
+@click_log.simple_verbosity_option(log)
+@click.argument("store")
+@click.pass_context
+def main(ctx, store):
+    ctx.obj = get_bmst(store)
 
-    for to_backup in opts.backup:
-        path = Path(to_backup)
-        make_backup(root=path, bmst=bmst)
 
+@main.command()
+@click.pass_obj
+def check(obj):
+    check_bmst(obj)
+
+
+@main.command()
+@click.pass_obj
+@click.argument("target", nargs=-1)
+def sync(obj, target):
+    internal_sync(obj, target)
+
+
+@main.command()
+@click.pass_obj
+def show(obj):
     import pprint
 
-    if opts.show:
-        pprint.pprint(list(bmst.meta))
+    pprint.pprint(list(obj.meta))
 
-    if opts.ls:
-        assert opts.key, "omg key missing"
-        print(json.dumps(bmst.load_meta(key=opts.key), indent=2, sort_keys=True))
 
-    if opts.extract:
-        extract(bmst, opts.key, opts.target)
+@main.command()
+@click.pass_obj
+@key_arg
+@click.argument("target")
+def extract(obj, key, target):
+    internal_extract(obj, key, target)
 
-    if opts.archive:
-        print("not implemented")
-        raise SystemExit(1)
-        # archive(bmst, opts.key, opts.target)
 
-    if opts.serve:
-        from bmst.wsgi import app
+@main.command()
+@click.pass_obj
+@click.argument("backup", nargs=-1)
+def backup(obj, backup):
+    for to_backup in backup:
+        path = Path(to_backup)
+        make_backup(root=path, bmst=obj)
 
-        app.bmst = bmst
-        app.run()
+
+@main.command()
+@click.pass_obj
+@key_arg
+def ls(obj, key):
+    print(json.dumps(obj.load_meta(key=key), indent=2, sort_keys=True))
+
+
+@main.command()
+def archive():
+    raise NotImplementedError()
+
+
+@main.command()
+@click.pass_obj
+@click.option("--listen", default="0.0.0.0:5000")
+def serve(obj, listen):
+    from bmst.wsgi import WsgiApp
+    from waitress import serve
+
+    app = WsgiApp(obj)
+    serve(app, listen=listen)
