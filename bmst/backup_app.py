@@ -37,6 +37,11 @@ def load_tree(root):
 
 
 def make_backup(root, bmst):
+    key = inner_make_backup(root, bmst)
+    bmst.add_root(key)
+
+
+def inner_make_backup(root, bmst):
     print("backing up", root)
     meta, blobs = fullmeta(root)
     try:

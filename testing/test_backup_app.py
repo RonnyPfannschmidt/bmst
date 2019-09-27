@@ -54,7 +54,7 @@ def test_makebackup(tmp_path, bmst):
     test_fullmeta(tmp_path)
     make_backup(tmp_path / "root", bmst)
     assert bmst.blobs == {CONTENT_HASH: CONTENT_COMPRESSED}
-    key, = bmst.meta.keys()
+    manifest, key = sorted(bmst.meta.keys())
     data = bz2.decompress(bmst.meta[key])
     meta = json.loads(data)
     assert meta == {
