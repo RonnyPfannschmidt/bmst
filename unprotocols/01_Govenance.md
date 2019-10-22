@@ -1,15 +1,13 @@
----
-
----
-
-## Project Govenance
-
+----
+status: raw
+----
 
 
 
 ### Contribution Handling
 
-Contributions will be accepted by means of the C4.2 Protocol.
+Contributions will be accepted by means of the
+C4.2 Protocol. (C4.3 Protocol){https://rfc.unprotocols.org/spec:1/C4/}
 
 
 ### Community Behaviour
