@@ -1,8 +1,8 @@
 import json
 
 import attr
+from werkzeug.exceptions import NotFound
 from werkzeug.routing import Map
-from werkzeug.routing import NotFound
 from werkzeug.routing import Rule
 from werkzeug.wrappers import Request
 from werkzeug.wrappers import Response

@@ -4,6 +4,8 @@
 
     in general a store is a mutable mapping that will not allow delete
 """
+from __future__ import annotations
+
 import collections.abc
 import json
 import pathlib
@@ -40,15 +42,15 @@ class FileStore(BaseStore):
     """
     stores items within a directory
 
-    :param path: a `py.path.local` instance of the directory
+    :param path: path of the directory
     """
 
-    path = attr.ib(converter=pathlib.Path)
+    path: pathlib.Path = attr.ib()
 
     @classmethod
-    def ensure(cls, path: pathlib.Path):
-        path.mkdir(exists_ok=True, parents=True)
-        return cls(path)
+    def ensure(cls, path: pathlib.Path) -> FileStore:
+        path.mkdir(exist_ok=True, parents=True)
+        return cls(path=path)
 
     def _itempath(self, key):
         return self.path / key

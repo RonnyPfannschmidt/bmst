@@ -2,6 +2,8 @@
     Basic utilities for the combined blob+metadata store
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
+from __future__ import annotations
+
 import bz2
 import hashlib
 import json
@@ -103,7 +105,7 @@ def encode_data(raw_data, key):
     if key is not None and computed_key != key:
         if key[0] != "!":
             # todo: real ref storage
-            raise ValueError("{!r} != {!r})".format(key, computed_key))
+            raise ValueError(f"{key!r} != {computed_key!r})")
     return computed_key, bz2.compress(raw_data)
 
 

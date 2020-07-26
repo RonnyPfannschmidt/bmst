@@ -1,4 +1,5 @@
 import hashlib
+from pathlib import Path
 
 import pytest
 
@@ -24,7 +25,7 @@ def setup_module(mod):
 )
 def store(request, tmpdir):
     if request.param is open:
-        return FileStore(tmpdir)
+        return FileStore(Path(tmpdir))
     if request.param is dict:
         return {}
     if request.param is None:
