@@ -16,10 +16,11 @@ CONTENT_COMPRESSED = bz2.compress(CONTENT)
 
 
 @pytest.fixture(params=[dict, FileStore])
-def bmst(request):
+def bmst(request, tmp_path):
     if request.param is dict:
         return BMST({}, {})
-    pytest.skip("not implemented")
+    elif request.param is FileStore:
+        return BMST.ensure_path(tmp_path / "bmst")
 
 
 def test_load(tmp_path):
@@ -53,7 +54,7 @@ def test_fullmeta(tmp_path):
 def test_makebackup(tmp_path, bmst):
     test_fullmeta(tmp_path)
     make_backup(tmp_path / "root", bmst)
-    assert bmst.blobs == {CONTENT_HASH: CONTENT_COMPRESSED}
+    assert dict(bmst.blobs.items()) == {CONTENT_HASH: CONTENT_COMPRESSED}
     manifest, key = sorted(bmst.meta.keys())
     data = bz2.decompress(bmst.meta[key])
     meta = json.loads(data)

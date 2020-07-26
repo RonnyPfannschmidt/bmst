@@ -7,6 +7,7 @@ from __future__ import annotations
 import bz2
 import hashlib
 import json
+from pathlib import Path
 
 import attr
 
@@ -124,6 +125,14 @@ class BMST:
 
     blobs = attr.ib(repr=False)
     meta = attr.ib(repr=False)
+
+    @classmethod
+    def ensure_path(cls, path: Path):
+        from .store import FileStore
+
+        return cls(
+            blobs=FileStore.ensure(path / "blob"), meta=FileStore.ensure(path / "meta")
+        )
 
     def store_meta(self, key=None, mapping=None):
         """
