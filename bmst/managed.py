@@ -101,7 +101,9 @@ def encode_data(raw_data, key):
     """
     computed_key = sha1(raw_data)
     if key is not None and computed_key != key:
-        raise ValueError("{!r} != {!r})".format(key, computed_key))
+        if key[0] != "!":
+            # todo: real ref storage
+            raise ValueError("{!r} != {!r})".format(key, computed_key))
     return computed_key, bz2.compress(raw_data)
 
 
@@ -128,17 +130,17 @@ class BMST:
 
         store a new meta item
         """
-
-        missing = find_missing_blobs(mapping["items"], self.blobs)
-        if missing:
-            raise LookupError(missing)
+        if isinstance(mapping["items"], dict):
+            missing = find_missing_blobs(mapping["items"], self.blobs)
+            if missing:
+                raise LookupError(missing)
 
         raw_data = json.dumps(mapping, indent=2, sort_keys=True)
         raw_data = raw_data.encode("utf-8")
-        key, encoded = encode_data(raw_data, key)
-        self.meta[key] = encoded
+        key_, encoded = encode_data(raw_data, key)
+        self.meta[key if key is not None else key_] = encoded
 
-        return key
+        return key if key is not None else key_
 
     def load_meta(self, key):
         """
@@ -157,3 +159,11 @@ class BMST:
     def load_blob(self, key):
         """load and decompress a blob"""
         return bz2.decompress(self.blobs[key])
+
+    def add_root(self, key):
+        try:
+            manifest = self.load_meta("!manifest")
+        except KeyError:
+            manifest = {"items": []}
+        manifest["items"].append(key)
+        self.store_meta("!manifest", manifest)
