@@ -7,10 +7,10 @@
 from __future__ import annotations
 
 import collections.abc
-import json
 import pathlib
 
 import attr
+import orjson
 
 
 def dumb_sync(source, target):
@@ -98,4 +98,4 @@ class Httplib2Store(BaseStore):
     def keys(self):
         headers, content = self.http.request(self.url)
         # XXX: check headers
-        return json.loads(content)
+        return orjson.loads(content)

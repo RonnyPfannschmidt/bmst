@@ -1,4 +1,4 @@
-import json
+import pprint
 from pathlib import Path
 
 import click
@@ -39,7 +39,6 @@ def sync(obj, target):
 @main.command()
 @click.pass_obj
 def show(obj):
-    import pprint
 
     pprint.pprint(list(obj.meta))
 
@@ -65,7 +64,7 @@ def backup(obj, backup):
 @click.pass_obj
 @key_arg
 def ls(obj, key):
-    print(json.dumps(obj.load_meta(key=key), indent=2, sort_keys=True))
+    pprint.pprint(obj.load_meta(key=key))
 
 
 @main.command()

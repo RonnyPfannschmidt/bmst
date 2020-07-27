@@ -1,6 +1,5 @@
-import json
-
 import attr
+import orjson
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import Map
 from werkzeug.routing import Rule
@@ -32,7 +31,7 @@ class WsgiApp:
         return method(request, self._store(args.pop("kind")), **args)
 
     def list(self, request, store):
-        return Response(json.dumps(list(store)), mimetype="application/json")
+        return Response(orjson.dumps(list(store)), mimetype="application/json")
 
     def load(self, request, store, key):
         try:
@@ -42,4 +41,4 @@ class WsgiApp:
 
     def save(self, request, store, key):
         store[key] = request.data
-        return Response("", status=204)
+        return Response(b"", status=204)

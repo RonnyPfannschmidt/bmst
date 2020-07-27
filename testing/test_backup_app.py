@@ -1,6 +1,6 @@
 import bz2
-import json
 
+import orjson
 import pytest
 
 from bmst.backup_app import fullmeta
@@ -57,7 +57,7 @@ def test_makebackup(tmp_path, bmst):
     assert dict(bmst.blobs.items()) == {CONTENT_HASH: CONTENT_COMPRESSED}
     manifest, key = sorted(bmst.meta.keys())
     data = bz2.decompress(bmst.meta[key])
-    meta = json.loads(data)
+    meta = orjson.loads(data)
     assert meta == {
         "project": "root",
         "tags": ["backup"],

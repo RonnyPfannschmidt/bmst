@@ -6,10 +6,10 @@ from __future__ import annotations
 
 import bz2
 import hashlib
-import json
 from pathlib import Path
 
 import attr
+import orjson
 
 
 def find_missing_blobs(expected, store):
@@ -146,8 +146,9 @@ class BMST:
             if missing:
                 raise LookupError(missing)
 
-        raw_data = json.dumps(mapping, indent=2, sort_keys=True)
-        raw_data = raw_data.encode("utf-8")
+        raw_data = orjson.dumps(
+            mapping, option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS
+        )
         key_, encoded = encode_data(raw_data, key)
         self.meta[key if key is not None else key_] = encoded
 
@@ -157,7 +158,7 @@ class BMST:
         """
         load and json-deserialize a metadata item
         """
-        return json.loads(bz2.decompress(self.meta[key]))
+        return orjson.loads(bz2.decompress(self.meta[key]))
 
     def store_blob(self, key=None, data=None):
         """
