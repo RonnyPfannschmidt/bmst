@@ -1,15 +1,15 @@
 import pytest
 
 from bmst.managed import BMST
-from bmst.managed import find_missing_blobs
+from bmst.managed import find_missing_items
 
 
 @pytest.fixture
 def store(request):
-    return BMST(blobs={}, meta={})
+    return BMST(storage={})
 
 
-def should_fail_put_meta_on_missing_blob(store):
+def should_fail_put_meta_on_missing_item(store):
 
     with pytest.raises(LookupError) as excinfo:
         store.store_meta(mapping={"items": {"test": "123"}})
@@ -21,12 +21,14 @@ def should_put_meta_on_existing_blob(store):
     store.store_meta(mapping={"items": {"test": blob}})
 
 
-def should_find_missing_blobs():
-    missing = find_missing_blobs({"test": "foo"}, {})
+def should_find_missing_blobs(store):
+    missing = find_missing_items({"test": "foo"}, store.storage)
 
     assert missing == {"test": "foo"}
 
 
-def should_not_find_existing_blobs():
-    missing = find_missing_blobs(expected={"test": "foo"}, store={"foo": "yay"})
+def should_not_find_existing_blobs(store):
+
+    ref = store.store_blob(data=b"test")
+    missing = find_missing_items(expected={"test": ref}, store=store.storage)
     assert missing is None
