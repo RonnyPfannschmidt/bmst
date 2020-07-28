@@ -6,13 +6,18 @@ from __future__ import annotations
 
 import bz2
 import hashlib
+import logging
 from pathlib import Path
 
 import attr
 import orjson
 
+log = logging.getLogger(__name__)
 
-def find_missing_blobs(expected, store):
+MANIFEST = "!manifest"
+
+
+def find_missing_items(expected, store):
     """
     utility to check if any blobs for a meta item are missing
     """
@@ -26,51 +31,57 @@ def find_missing_blobs(expected, store):
         return missing
 
 
-def sha1(data):
+def sha1(data: bytes):
     """
     shortcut to get a hexdigest sha1 of some data
     """
     return hashlib.sha1(data).hexdigest()
 
 
-def check_store(bmst, kind):
+def check_store(bmst: BMST):
     """
     check hash consistency of the store `kind` in `bmst`
     """
-    print("checking", kind)
-    store = getattr(bmst, kind)
+    log.info("checking storage",)
+    store = bmst.storage
     errors = []
-    for item in store:
-        raw = bz2.decompress(store[item])
+    for item, compressed in store.items():
+        raw = bz2.decompress(compressed)
         sha = sha1(raw)
         if sha != item:
-            print("E: item", item, "got hash", sha, "instead")
+            log.warning("E: item %s got hash %s instead", item, hash)
             errors.append(item)
     return errors
 
 
-def check_references(bmst):
+def check_references(bmst: BMST):
     """
     check if all blobs required for the mea items exist
     """
     print("checking references")
     all_missing = {}
-    for item in bmst.meta:
+
+    manifest = bmst.load_meta("!manifest")
+
+    for item in manifest["items"]:
         data = bmst.load_meta(item)
-        missing = find_missing_blobs(data["items"], bmst.blobs)
+        missing = find_missing_items(data["items"], bmst.storage)
         if missing:
             print("E: missing blobs for meta, item", item)
             all_missing[item] = missing
     return all_missing
 
 
-def find_orphans(bmst):
+def find_orphans(bmst: BMST):
     """
     search for unreferenced blobs
     """
-    print("searching orphan blobs")
-    known = set(bmst.blobs)
-    for item in bmst.meta:
+    print("searching orphan data")
+    known = set(bmst.storage)
+
+    manifest = bmst.load_meta(MANIFEST)
+
+    for item in manifest["items"]:
         data = bmst.load_meta(item)
         known -= set(data["items"].values())
     if known:
@@ -79,25 +90,22 @@ def find_orphans(bmst):
 
 
 checks = [
-    (check_store, "blobs"),
-    (check_store, "meta"),
+    check_store,
     # XXX meta items vaid json test is missing
-    (check_references,),
-    (find_orphans,),
+    check_references,
+    find_orphans,
 ]
 
 
-def check_bmst(bmst):
+def check_bmst(bmst: BMST):
 
     results = []
     for check in checks:
-        fun = check[0]
-        args = check[1:]
 
-        results.append(fun(bmst, *args))
+        results.append(check(bmst))
 
 
-def encode_data(raw_data, key):
+def encode_data(raw_data: bytes, key):
     """
     utility function to check or generate the key of a data item
     and compress it in one step
@@ -123,16 +131,13 @@ class BMST:
     :param meta: the store for meta item
     """
 
-    blobs = attr.ib(repr=False)
-    meta = attr.ib(repr=False)
+    storage = attr.ib()
 
     @classmethod
     def ensure_path(cls, path: Path):
         from .store import FileStore
 
-        return cls(
-            blobs=FileStore.ensure(path / "blob"), meta=FileStore.ensure(path / "meta")
-        )
+        return cls(storage=FileStore.ensure(path))
 
     def store_meta(self, key=None, mapping=None):
         """
@@ -142,7 +147,7 @@ class BMST:
         store a new meta item
         """
         if isinstance(mapping["items"], dict):
-            missing = find_missing_blobs(mapping["items"], self.blobs)
+            missing = find_missing_items(mapping["items"], self.storage)
             if missing:
                 raise LookupError(missing)
 
@@ -150,7 +155,7 @@ class BMST:
             mapping, option=orjson.OPT_INDENT_2 | orjson.OPT_SORT_KEYS
         )
         key_, encoded = encode_data(raw_data, key)
-        self.meta[key if key is not None else key_] = encoded
+        self.storage[key if key is not None else key_] = encoded
 
         return key if key is not None else key_
 
@@ -158,19 +163,19 @@ class BMST:
         """
         load and json-deserialize a metadata item
         """
-        return orjson.loads(bz2.decompress(self.meta[key]))
+        return orjson.loads(bz2.decompress(self.storage[key]))
 
     def store_blob(self, key=None, data=None):
         """
         store a compressed blob
         """
         key, encoded = encode_data(data, key)
-        self.blobs[key] = encoded
+        self.storage[key] = encoded
         return key
 
     def load_blob(self, key):
         """load and decompress a blob"""
-        return bz2.decompress(self.blobs[key])
+        return bz2.decompress(self.storage[key])
 
     def add_root(self, key):
         try:

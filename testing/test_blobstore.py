@@ -31,11 +31,11 @@ def store(request, tmpdir):
     if request.param is None:
         from bmst.wsgi import WsgiApp
 
-        app = WsgiApp(BMST(meta={}, blobs={}))
+        app = WsgiApp(BMST(storage={}))
         import wsgi_intercept
 
         wsgi_intercept.add_wsgi_intercept("test_host", 80, lambda: app)
-        return Httplib2Store("http://test_host/blobs/")
+        return Httplib2Store("http://test_host/")
 
 
 def should_save(store):

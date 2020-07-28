@@ -9,9 +9,9 @@ from werkzeug.wrappers import Response
 
 url_map = Map(
     [
-        Rule("/<any(meta,blobs):kind>/", methods=("GET",), endpoint="list"),
-        Rule("/<any(meta,blobs):kind>/<key>", methods=("GET",), endpoint="load"),
-        Rule("/<any(meta,blobs):kind>/<key>", methods=("PUT",), endpoint="save"),
+        Rule("/", methods=("GET",), endpoint="list"),
+        Rule("/<key>", methods=("GET",), endpoint="load"),
+        Rule("/<key>", methods=("PUT",), endpoint="save"),
     ]
 )
 
@@ -20,15 +20,12 @@ url_map = Map(
 class WsgiApp:
     bmst = attr.ib()
 
-    def _store(self, kind):
-        return getattr(self.bmst, kind)
-
     @Request.application
     def __call__(self, request):
         urls = url_map.bind_to_environ(request.environ)
         endpoint, args = urls.match()
         method = getattr(self, endpoint)
-        return method(request, self._store(args.pop("kind")), **args)
+        return method(request, self.bmst.storage, **args)
 
     def list(self, request, store):
         return Response(orjson.dumps(list(store)), mimetype="application/json")
