@@ -42,7 +42,9 @@ def check_store(bmst: BMST):
     """
     check hash consistency of the store `kind` in `bmst`
     """
-    log.info("checking storage",)
+    log.info(
+        "checking storage",
+    )
     store = bmst.storage
     errors = []
     for item, compressed in store.items():
