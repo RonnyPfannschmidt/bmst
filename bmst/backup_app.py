@@ -14,7 +14,7 @@ def basemeta(root):
     blobs = {}
     for k, (hash, content) in items.items():
         item_meta[k] = hash
-        # asume collisions are unlikely enough
+        # assume collisions are unlikely enough
         blobs[hash] = content
 
     return {"items": item_meta, "timestamp": mtime}, blobs

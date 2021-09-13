@@ -8,6 +8,9 @@ import bz2
 import hashlib
 import logging
 from pathlib import Path
+from typing import Dict
+from typing import List
+from typing import Optional
 
 import attr
 import orjson
@@ -17,7 +20,7 @@ log = logging.getLogger(__name__)
 MANIFEST = "!manifest"
 
 
-def find_missing_items(expected, store):
+def find_missing_items(expected, store) -> Optional[Dict]:
     """
     utility to check if any blobs for a meta item are missing
     """
@@ -27,18 +30,19 @@ def find_missing_items(expected, store):
         if value not in keys:
             missing[name] = value
     if missing:
-        # cause we want None else
         return missing
+    else:
+        return None
 
 
-def sha1(data: bytes):
+def sha1(data: bytes) -> str:
     """
-    shortcut to get a hexdigest sha1 of some data
+    shortcut to get a hex-digest sha1 of some data
     """
     return hashlib.sha1(data).hexdigest()
 
 
-def check_store(bmst: BMST):
+def check_store(bmst: BMST) -> List[str]:
     """
     check hash consistency of the store `kind` in `bmst`
     """
@@ -93,7 +97,7 @@ def find_orphans(bmst: BMST):
 
 checks = [
     check_store,
-    # XXX meta items vaid json test is missing
+    # XXX meta items valid json test is missing
     check_references,
     find_orphans,
 ]
@@ -141,14 +145,14 @@ class BMST:
 
         return cls(storage=FileStore.ensure(path))
 
-    def store_meta(self, key=None, mapping=None):
+    def store_meta(self, key: Optional[str] = None, mapping: Optional[dict] = None):
         """
         :param key: the expected sha1 id
         :param mapping: the json compatible data for this item
 
         store a new meta item
         """
-        if isinstance(mapping["items"], dict):
+        if mapping is not None and isinstance(mapping["items"], dict):
             missing = find_missing_items(mapping["items"], self.storage)
             if missing:
                 raise LookupError(missing)

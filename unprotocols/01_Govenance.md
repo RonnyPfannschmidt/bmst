@@ -10,10 +10,10 @@ Contributions will be accepted by means of the
 C4.2 Protocol. (C4.3 Protocol){https://rfc.unprotocols.org/spec:1/C4/}
 
 
-### Community Behaviour
+### Community Behavior
 
-The Project will implement recent versions of the Contributors Covenant to deal with behaviour.
-Community Administratos MUST coordinate its enforcement.
+The Project will implement recent versions of the Contributors Covenant to deal with behavior.
+Community Administrators MUST coordinate its enforcement.
 
 
 ### Community Administrators

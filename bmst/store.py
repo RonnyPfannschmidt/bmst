@@ -24,7 +24,7 @@ def dumb_sync(source, target):
 
 class BaseStore(collections.abc.MutableMapping):
     """
-    convience base class implementing basic methods for stores
+    convenience base class implementing basic methods for stores
     """
 
     def __len__(self):
