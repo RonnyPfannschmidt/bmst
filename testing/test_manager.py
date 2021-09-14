@@ -31,4 +31,4 @@ def should_not_find_existing_blobs(store):
 
     ref = store.store_blob(data=b"test")
     missing = find_missing_items(expected={"test": ref}, store=store.storage)
-    assert missing is None
+    assert missing == {}

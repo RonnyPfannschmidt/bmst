@@ -20,7 +20,7 @@ url_map = Map(
 class WsgiApp:
     bmst = attr.ib()
 
-    @Request.application
+    @Request.application  # type: ignore
     def __call__(self, request):
         urls = url_map.bind_to_environ(request.environ)
         endpoint, args = urls.match()

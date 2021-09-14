@@ -71,7 +71,7 @@ class FileStore(BaseStore):
         return [x.name for x in self.path.iterdir()]
 
 
-class Httplib2Store(BaseStore):
+class HttpxStore(BaseStore):
     """
     http using store
 
@@ -80,22 +80,23 @@ class Httplib2Store(BaseStore):
     :param url: the url to use
     """
 
-    def __init__(self, url):
-        import httplib2
+    def __init__(self, base_url, **kw):
+        import httpx
 
-        self.http = httplib2.Http()
-        self.url = url
+        self.http = httpx.Client(base_url=base_url, **kw)
 
     def __getitem__(self, key):
-        headers, content = self.http.request(self.url + key)
-        if headers["status"] == "404":
+        response = self.http.get(key)
+        if response.status_code == 404:
             raise KeyError(key)
-        return content
+        return response.content
 
     def __setitem__(self, key, value):
-        self.http.request(self.url + key, method="PUT", body=value)
+        r = self.http.put(key, content=value)
+        r.raise_for_status()
 
     def keys(self):
-        headers, content = self.http.request(self.url)
+        r = self.http.get("")
+        r.raise_for_status()
         # XXX: check headers
-        return orjson.loads(content)
+        return orjson.loads(r.content)

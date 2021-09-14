@@ -5,15 +5,9 @@ import pytest
 
 from bmst.managed import BMST
 from bmst.store import FileStore
-from bmst.store import Httplib2Store
+from bmst.store import HttpxStore
 
 key = hashlib.sha1(b"test").hexdigest()
-
-
-def setup_module(mod):
-    from wsgi_intercept.httplib2_intercept import install
-
-    install()
 
 
 @pytest.fixture(
@@ -32,10 +26,8 @@ def store(request, tmpdir):
         from bmst.wsgi import WsgiApp
 
         app = WsgiApp(BMST(storage={}))
-        import wsgi_intercept
 
-        wsgi_intercept.add_wsgi_intercept("test_host", 80, lambda: app)
-        return Httplib2Store("http://test_host/")
+        return HttpxStore("http://test_host/", app=app)
 
 
 def should_save(store):
