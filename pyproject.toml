@@ -1,2 +1,6 @@
 [build-system]
-requires = ["setuptools>=41.2.0", "wheel", "setuptools_scm>3"]
+requires = [
+    "setuptools>=50",
+    "wheel",
+    "setuptools_scm>=6.3.1"
+]
