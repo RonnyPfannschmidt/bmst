@@ -8,9 +8,6 @@ import bz2
 import hashlib
 import logging
 from pathlib import Path
-from typing import Dict
-from typing import List
-from typing import Optional
 
 import attr
 import orjson
@@ -20,7 +17,7 @@ log = logging.getLogger(__name__)
 MANIFEST = "!manifest"
 
 
-def find_missing_items(expected, store) -> Optional[Dict]:
+def find_missing_items(expected, store) -> dict:
     """
     utility to check if any blobs for a meta item are missing
     """
@@ -29,10 +26,7 @@ def find_missing_items(expected, store) -> Optional[Dict]:
     for name, value in expected.items():
         if value not in keys:
             missing[name] = value
-    if missing:
-        return missing
-    else:
-        return None
+    return missing
 
 
 def sha1(data: bytes) -> str:
@@ -42,7 +36,7 @@ def sha1(data: bytes) -> str:
     return hashlib.sha1(data).hexdigest()
 
 
-def check_store(bmst: BMST) -> List[str]:
+def check_store(bmst: BMST) -> list[str]:
     """
     check hash consistency of the store `kind` in `bmst`
     """
@@ -145,7 +139,7 @@ class BMST:
 
         return cls(storage=FileStore.ensure(path))
 
-    def store_meta(self, key: Optional[str] = None, mapping: Optional[dict] = None):
+    def store_meta(self, key: str | None = None, mapping: dict | None = None):
         """
         :param key: the expected sha1 id
         :param mapping: the json compatible data for this item
