@@ -37,6 +37,7 @@ source = "vcs"
 version-file = "bmst/_version.py"
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "/src",
+exclude = [
+    ".github",
 ]
+[tool.hatch.build.targets.wheel]

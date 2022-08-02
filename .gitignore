@@ -5,3 +5,5 @@ MANIFEST
 .env/
 *.egg-info/
 pip-wheel-metadata
+dist/
+bmst/_version.py
