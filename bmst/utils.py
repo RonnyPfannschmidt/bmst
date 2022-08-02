@@ -7,7 +7,7 @@ from pathlib import Path
 from bmst.managed import BMST
 from bmst.store import dumb_sync
 from bmst.store import FileStore
-from bmst.store import Httplib2Store
+from bmst.store import HttpxStore
 
 
 def get_bmst(path):
@@ -17,8 +17,8 @@ def get_bmst(path):
     """
     if path.startswith("http"):
         path = path.rstrip("/")
-        blobs = Httplib2Store(path + "/blobs/")
-        meta = Httplib2Store(path + "/meta/")
+        blobs = HttpxStore(path + "/blobs/")
+        meta = HttpxStore(path + "/meta/")
     else:
         root = Path(path)
         root.mkdir(exists_ok=True, parents=True)

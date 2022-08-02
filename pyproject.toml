@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 name = "bmst"
 description = "simple backup store"
 readme = "README.rst"
-license = "AGPL-3+"
+license = "agpl-3.0-or-later"
 dependencies = [
     "attr",
     "click",
@@ -38,5 +38,5 @@ version-file = "bmst/_version.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/bmst",
+    "/src",
 ]
