@@ -1,6 +1,42 @@
 [build-system]
 requires = [
-    "setuptools>=50",
-    "wheel",
-    "setuptools_scm>=6.3.1"
+    "hatchling>=1.3.1",
+    "hatch-vcs",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "bmst"
+description = "simple backup store"
+readme = "README.rst"
+license = "AGPL-3+"
+dependencies = [
+    "attr",
+    "click",
+    "click_log",
+    "httpx",
+    "orjson",
+    "werkzeug",
+]
+dynamic = [
+    "version",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+[project.scripts]
+bmst = "bmst.main:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "bmst/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/bmst",
 ]
