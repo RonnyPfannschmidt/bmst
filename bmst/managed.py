@@ -98,10 +98,8 @@ checks = [
 
 
 def check_bmst(bmst: BMST):
-
     results = []
     for check in checks:
-
         results.append(check(bmst))
 
 

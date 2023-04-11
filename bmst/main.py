@@ -39,7 +39,6 @@ def sync(obj, target):
 @main.command()
 @click.pass_obj
 def show(obj):
-
     pprint.pprint(list(obj.meta))
 
 

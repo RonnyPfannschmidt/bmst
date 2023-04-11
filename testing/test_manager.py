@@ -10,7 +10,6 @@ def store(request):
 
 
 def should_fail_put_meta_on_missing_item(store):
-
     with pytest.raises(LookupError) as excinfo:
         store.store_meta(mapping={"items": {"test": "123"}})
     assert excinfo.value.args[0] == {"test": "123"}
@@ -28,7 +27,6 @@ def should_find_missing_blobs(store):
 
 
 def should_not_find_existing_blobs(store):
-
     ref = store.store_blob(data=b"test")
     missing = find_missing_items(expected={"test": ref}, store=store.storage)
     assert missing == {}
