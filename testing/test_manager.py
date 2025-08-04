@@ -1,7 +1,6 @@
 import pytest
 
-from bmst.managed import BMST
-from bmst.managed import find_missing_items
+from bmst.managed import BMST, find_missing_items
 
 
 @pytest.fixture

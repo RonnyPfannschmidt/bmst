@@ -11,7 +11,6 @@ from bmst.utils import extract as internal_extract
 from bmst.utils import get_bmst
 from bmst.utils import sync as internal_sync
 
-
 key_arg = click.argument("key")
 
 
@@ -75,8 +74,9 @@ def archive():
 @click.pass_obj
 @click.option("--listen", default="0.0.0.0:5000")
 def serve(obj, listen):
-    from bmst.wsgi import WsgiApp
     from waitress import serve
+
+    from bmst.wsgi import WsgiApp
 
     app = WsgiApp(obj)
     serve(app, listen=listen)

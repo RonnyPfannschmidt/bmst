@@ -1,7 +1,8 @@
 """
-    Basic utilities for the combined blob+metadata store
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Basic utilities for the combined blob+metadata store
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
+
 from __future__ import annotations
 
 import bz2
@@ -85,7 +86,7 @@ def find_orphans(bmst: BMST):
         data = bmst.load_meta(item)
         known -= set(data["items"].values())
     if known:
-        print("E: found %s orphans" % len(known))
+        print(f"E: found {len(known)} orphans")
     return known
 
 

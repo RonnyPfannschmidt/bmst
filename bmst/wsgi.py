@@ -1,11 +1,8 @@
 import attr
 import orjson
 from werkzeug.exceptions import NotFound
-from werkzeug.routing import Map
-from werkzeug.routing import Rule
-from werkzeug.wrappers import Request
-from werkzeug.wrappers import Response
-
+from werkzeug.routing import Map, Rule
+from werkzeug.wrappers import Request, Response
 
 url_map = Map(
     [

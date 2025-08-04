@@ -2,13 +2,8 @@ import bz2
 
 import pytest
 
-from bmst.backup_app import fullmeta
-from bmst.backup_app import load_tree
-from bmst.backup_app import make_backup
-from bmst.managed import BMST
-from bmst.managed import check_bmst
-from bmst.managed import MANIFEST
-from bmst.managed import sha1
+from bmst.backup_app import fullmeta, load_tree, make_backup
+from bmst.managed import BMST, MANIFEST, check_bmst, sha1
 from bmst.store import FileStore
 
 CONTENT = b"test\n"

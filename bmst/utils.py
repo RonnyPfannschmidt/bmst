@@ -1,13 +1,12 @@
 """
-    Extra utilities used by the cli
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Extra utilities used by the cli
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
+
 from pathlib import Path
 
 from bmst.managed import BMST
-from bmst.store import dumb_sync
-from bmst.store import FileStore
-from bmst.store import HttpxStore
+from bmst.store import FileStore, HttpxStore, dumb_sync
 
 
 def get_bmst(path):

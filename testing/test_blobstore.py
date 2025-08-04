@@ -4,8 +4,7 @@ from pathlib import Path
 import pytest
 
 from bmst.managed import BMST
-from bmst.store import FileStore
-from bmst.store import HttpxStore
+from bmst.store import FileStore, HttpxStore
 
 key = hashlib.sha1(b"test").hexdigest()
 
