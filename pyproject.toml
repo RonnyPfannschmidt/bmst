@@ -10,8 +10,8 @@ name = "bmst"
 description = "simple backup store"
 readme = "README.rst"
 license = "agpl-3.0-or-later"
+requires-python = ">=3.12"
 dependencies = [
-    "attr",
     "click",
     "click_log",
     "httpx",
@@ -21,10 +21,12 @@ dependencies = [
 dynamic = [
     "version",
 ]
-
-[project.optional-dependencies]
+[dependency-groups]
 test = [
     "pytest",
+    "mypy",
+    "ruff",
+    "types-waitress",
 ]
 
 [project.scripts]
@@ -53,3 +55,6 @@ extend-select = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["bmst"]
+
+[tool.uv]
+default-groups = ["test"]

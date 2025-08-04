@@ -1,8 +1,13 @@
-import attr
+from __future__ import annotations
+
+from dataclasses import dataclass
+
 import orjson
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import Map, Rule
 from werkzeug.wrappers import Request, Response
+
+from .managed import BMST
 
 url_map = Map(
     [
@@ -13,9 +18,9 @@ url_map = Map(
 )
 
 
-@attr.s
+@dataclass
 class WsgiApp:
-    bmst = attr.ib()
+    bmst: BMST
 
     @Request.application  # type: ignore
     def __call__(self, request):

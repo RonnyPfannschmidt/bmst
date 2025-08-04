@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import collections.abc
 import pathlib
+from dataclasses import dataclass
 
-import attr
 import orjson
 
 
@@ -38,7 +38,7 @@ class BaseStore(collections.abc.MutableMapping):
         raise TypeError
 
 
-@attr.s
+@dataclass
 class FileStore(BaseStore):
     """
     stores items within a directory
@@ -46,7 +46,7 @@ class FileStore(BaseStore):
     :param path: path of the directory
     """
 
-    path: pathlib.Path = attr.ib()
+    path: pathlib.Path
 
     @classmethod
     def ensure(cls, path: pathlib.Path) -> FileStore:

@@ -8,10 +8,12 @@ from __future__ import annotations
 import bz2
 import hashlib
 import logging
+from dataclasses import dataclass
 from pathlib import Path
 
-import attr
 import orjson
+
+from .store import BaseStore
 
 log = logging.getLogger(__name__)
 
@@ -117,7 +119,7 @@ def encode_data(raw_data: bytes, key):
     return computed_key, bz2.compress(raw_data)
 
 
-@attr.s
+@dataclass
 class BMST:
     """
     this class combines a store for meta items and a store for blobs
@@ -130,7 +132,7 @@ class BMST:
     :param meta: the store for meta item
     """
 
-    storage = attr.ib()
+    storage: BaseStore
 
     @classmethod
     def ensure_path(cls, path: Path):
