@@ -1,13 +1,16 @@
-from .managed import sha1
+from pathlib import Path
+from typing import Any
+
+from .managed import BMST, sha1
 
 
-def fullmeta(root):
+def fullmeta(root: Path) -> tuple[dict[str, Any], dict[str, bytes]]:
     meta, blobs = basemeta(root)
     meta.update(guessmeta(root))
     return meta, blobs
 
 
-def basemeta(root):
+def basemeta(root: Path) -> tuple[dict[str, Any], dict[str, bytes]]:
     items, mtime = load_tree(root)
 
     item_meta = {}
@@ -20,13 +23,13 @@ def basemeta(root):
     return {"items": item_meta, "timestamp": mtime}, blobs
 
 
-def guessmeta(root):
+def guessmeta(root: Path) -> dict[str, Any]:
     return {"project": root.name, "tags": ["backup"]}
 
 
-def load_tree(root):
+def load_tree(root: Path) -> tuple[dict[str, tuple[str, bytes]], float]:
     results = {}
-    mtime = 0
+    mtime = 0.0
     for x in root.rglob("*"):
         if x.is_file():
             data = x.read_bytes()
@@ -36,12 +39,12 @@ def load_tree(root):
     return results, mtime
 
 
-def make_backup(root, bmst):
+def make_backup(root: Path, bmst: BMST) -> None:
     key = inner_make_backup(root, bmst)
     bmst.add_root(key)
 
 
-def inner_make_backup(root, bmst):
+def inner_make_backup(root: Path, bmst: BMST) -> str:
     print("backing up", root)
     meta, blobs = fullmeta(root)
     try:

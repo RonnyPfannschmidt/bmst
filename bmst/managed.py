@@ -10,6 +10,7 @@ import hashlib
 import logging
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import orjson
 
@@ -20,7 +21,7 @@ log = logging.getLogger(__name__)
 MANIFEST = "!manifest"
 
 
-def find_missing_items(expected, store) -> dict:
+def find_missing_items(expected: dict[str, str], store: BaseStore) -> dict[str, str]:
     """
     utility to check if any blobs for a meta item are missing
     """
@@ -57,7 +58,7 @@ def check_store(bmst: BMST) -> list[str]:
     return errors
 
 
-def check_references(bmst: BMST):
+def check_references(bmst: BMST) -> dict[str, dict[str, str]]:
     """
     check if all blobs required for the mea items exist
     """
@@ -75,7 +76,7 @@ def check_references(bmst: BMST):
     return all_missing
 
 
-def find_orphans(bmst: BMST):
+def find_orphans(bmst: BMST) -> set[str]:
     """
     search for unreferenced blobs
     """
@@ -100,13 +101,13 @@ checks = [
 ]
 
 
-def check_bmst(bmst: BMST):
+def check_bmst(bmst: BMST) -> None:
     results = []
     for check in checks:
         results.append(check(bmst))
 
 
-def encode_data(raw_data: bytes, key):
+def encode_data(raw_data: bytes, key: str | None) -> tuple[str, bytes]:
     """
     utility function to check or generate the key of a data item
     and compress it in one step
@@ -135,12 +136,14 @@ class BMST:
     storage: BaseStore
 
     @classmethod
-    def ensure_path(cls, path: Path):
+    def ensure_path(cls, path: Path) -> BMST:
         from .store import FileStore
 
         return cls(storage=FileStore.ensure(path))
 
-    def store_meta(self, key: str | None = None, mapping: dict | None = None):
+    def store_meta(
+        self, key: str | None = None, mapping: dict[str, Any] | None = None
+    ) -> str:
         """
         :param key: the expected sha1 id
         :param mapping: the json compatible data for this item
@@ -160,25 +163,27 @@ class BMST:
 
         return key if key is not None else key_
 
-    def load_meta(self, key):
+    def load_meta(self, key: str) -> Any:
         """
         load and json-deserialize a metadata item
         """
         return orjson.loads(bz2.decompress(self.storage[key]))
 
-    def store_blob(self, key=None, data=None):
+    def store_blob(self, key: str | None = None, data: bytes | None = None) -> str:
         """
         store a compressed blob
         """
+        if data is None:
+            raise ValueError("data cannot be None")
         key, encoded = encode_data(data, key)
         self.storage[key] = encoded
         return key
 
-    def load_blob(self, key):
+    def load_blob(self, key: str) -> bytes:
         """load and decompress a blob"""
         return bz2.decompress(self.storage[key])
 
-    def add_root(self, key):
+    def add_root(self, key: str) -> None:
         try:
             manifest = self.load_meta("!manifest")
         except KeyError:

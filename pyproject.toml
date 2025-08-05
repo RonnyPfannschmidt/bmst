@@ -12,11 +12,11 @@ readme = "README.rst"
 license = "agpl-3.0-or-later"
 requires-python = ">=3.12"
 dependencies = [
-    "click",
-    "click_log",
-    "httpx",
-    "orjson",
-    "werkzeug",
+    "click>=8.0",
+    "click_log>=0.4.0",
+    "httpx>=0.24.0",
+    "orjson>=3.8.0",
+    "werkzeug>=2.0.0",
 ]
 dynamic = [
     "version",

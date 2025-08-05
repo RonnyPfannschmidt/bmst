@@ -1,6 +1,7 @@
 import hashlib
 from pathlib import Path
 
+import httpx
 import pytest
 
 from bmst.managed import BMST
@@ -25,8 +26,9 @@ def store(request, tmpdir):
         from bmst.wsgi import WsgiApp
 
         app = WsgiApp(BMST(storage={}))
+        transport = httpx.WSGITransport(app=app)
 
-        return HttpxStore("http://test_host/", app=app)
+        return HttpxStore("http://test_host/", transport=transport)
 
 
 def should_save(store):
