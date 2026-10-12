@@ -11,7 +11,6 @@ from bmst.utils import extract as internal_extract
 from bmst.utils import get_bmst
 from bmst.utils import sync as internal_sync
 
-
 key_arg = click.argument("key")
 
 

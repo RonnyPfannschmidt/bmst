@@ -1,6 +1,6 @@
 """
-    Extra utilities used by the cli
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Extra utilities used by the cli
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 from pathlib import Path
 

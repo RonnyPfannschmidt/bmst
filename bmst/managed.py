@@ -1,6 +1,6 @@
 """
-    Basic utilities for the combined blob+metadata store
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Basic utilities for the combined blob+metadata store
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 from __future__ import annotations
 

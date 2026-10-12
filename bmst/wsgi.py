@@ -6,7 +6,6 @@ from werkzeug.routing import Rule
 from werkzeug.wrappers import Request
 from werkzeug.wrappers import Response
 
-
 url_map = Map(
     [
         Rule("/", methods=("GET",), endpoint="list"),
