@@ -1,8 +1,8 @@
 """
-    Basic Store APIS
-    ~~~~~~~~~~~~~~~~
+Basic Store APIS
+~~~~~~~~~~~~~~~~
 
-    in general a store is a mutable mapping that will not allow delete
+in general a store is a mutable mapping that will not allow delete
 """
 from __future__ import annotations
 
